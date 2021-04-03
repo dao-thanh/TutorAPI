@@ -1,17 +1,40 @@
 package doancnpm.payload.request;
 
-import doancnpm.models.User;
+
+import java.util.Set;
+
+
 
 public class AddTutorRequest {
 	private String qualification;
 	private String avatar;
-	private String time;
 	private String description;
-	private Long gradeId;
-	private Long subjectId;
-	private Long addressId;
+	private Set<String> subjects;
+	private Set<String> grade;
+	private String address;
+	private Set<String> teachingDate;
+	private String username;
+	private String rating;
 	
+	public String getRating() {
+		return rating;
+	}
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	
+	public Set<String> getTeachingDate() {
+		return teachingDate;
+	}
+	public void setTeachingDate(Set<String> teachingDate) {
+		this.teachingDate = teachingDate;
+	}
 	public String getQualification() {
 		return qualification;
 	}
@@ -24,36 +47,34 @@ public class AddTutorRequest {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-	public String getTime() {
-		return time;
-	}
-	public void setTime(String time) {
-		this.time = time;
-	}
+	
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Long getGradeId() {
-		return gradeId;
+	
+
+	public Set<String> getGrade() {
+		return grade;
 	}
-	public void setGradeId(Long gradeId) {
-		this.gradeId = gradeId;
+	public void setGrade(Set<String> grade) {
+		this.grade = grade;
 	}
-	public Long getSubjectId() {
-		return subjectId;
+	public String getAddress() {
+		return address;
 	}
-	public void setSubjectId(Long subjectId) {
-		this.subjectId = subjectId;
+	public void setAddress(String address) {
+		this.address = address;
 	}
-	public Long getAddressId() {
-		return addressId;
+	public Set<String> getSubjects() {
+		return subjects;
 	}
-	public void setAddressId(Long addressId) {
-		this.addressId = addressId;
+	public void setSubjects(Set<String> subjects) {
+		this.subjects = subjects;
 	}
+		
 	
 	
 }

@@ -43,8 +43,12 @@ public class User {
 
 	public User() {
 	}
-
-	@OneToOne(mappedBy = "user")
+	
+	
+	
+//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY, optional = false)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Tutor tutor;
 
 	public User(String username, String email, String phonenumber, String password) {

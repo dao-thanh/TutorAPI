@@ -1,0 +1,18 @@
+package doancnpm.repository;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import doancnpm.models.Post;
+
+public interface PostRepository extends JpaRepository<Post, Long> {
+	Page<Post> findBySubject(String subject, Pageable paging);
+
+	Page<Post> findByGrade(String grade, Pageable paging);
+
+	Page<Post> findByGradeInAndSubjectIn(String grade, String subject, Pageable paging);
+
+}

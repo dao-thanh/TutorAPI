@@ -1,0 +1,42 @@
+package doancnpm.converter;
+
+import org.springframework.stereotype.Component;
+
+import doancnpm.models.Post;
+import doancnpm.payload.request.PostRequest;
+
+@Component
+public class PostConverter {
+
+	public Post toEntity(PostRequest dto) {
+		Post entity = new Post();
+		entity.setTitle(dto.getTitle());
+		entity.setContent(dto.getContent());
+		entity.setGrade(dto.getGrade());
+		entity.setSubject(dto.getSubject());
+		return entity;
+	}
+
+	public PostRequest toDTO(Post entity) {
+		PostRequest dto = new PostRequest();
+		if (entity.getId() != null) {
+			dto.setId(entity.getId());
+		}
+		dto.setTitle(entity.getTitle());
+		dto.setContent(entity.getContent());
+		dto.setGrade(entity.getGrade());
+		dto.setSubject(entity.getSubject());
+		dto.setCreatedDate(entity.getCreatedDate());
+		dto.setModifiedDate(entity.getModifiedDate());
+		return dto;
+	}
+
+	public Post toEntity(PostRequest dto, Post entity) {
+
+		entity.setTitle(dto.getTitle());
+		entity.setContent(dto.getContent());
+		entity.setGrade(dto.getGrade());
+		entity.setSubject(dto.getSubject());
+		return entity;
+	}
+}

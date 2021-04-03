@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
 import doancnpm.models.User;
 
 
@@ -15,7 +16,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Boolean existsByUsername(String username);
 
 	Boolean existsByEmail(String email);
+<<<<<<< HEAD
 	
 
 	User findOneByusername(String username);
+=======
+	User findOneByUsername(String username);
+>>>>>>> nam
 }

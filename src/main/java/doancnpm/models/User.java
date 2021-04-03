@@ -1,6 +1,8 @@
 package doancnpm.models;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -51,6 +53,9 @@ public class User {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Tutor tutor;
 
+	@OneToMany(mappedBy = "user")
+	private List<Post> post = new ArrayList<>();
+
 	public User(String username, String email, String phonenumber, String password) {
 		this.username = username;
 		this.email = email;
@@ -97,4 +102,13 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public Tutor getTutor() {
+		return tutor;
+	}
+
+	public void setTutor(Tutor tutor) {
+		this.tutor = tutor;
+	}
+
 }

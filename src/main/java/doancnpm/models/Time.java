@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -20,15 +21,18 @@ public class Time {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "startingTime")
-	private String startingTime;
+	@Column(name = "session")
+	private String session;
 	
-	@Column(name = "endTime")
-	private String endTime;
 	
-	@OneToMany(mappedBy = "time")
-	@JsonIgnoreProperties("time")
+//	@OneToMany(mappedBy = "time")
+//	@JsonIgnoreProperties("time")
+//	private List<Schedule> schedules = new ArrayList<>();
+	
+	@ManyToMany(mappedBy = "times")
+	@JsonIgnoreProperties("times")
 	private List<Schedule> schedules = new ArrayList<>();
+	
 
 	public Integer getId() {
 		return id;
@@ -38,20 +42,12 @@ public class Time {
 		this.id = id;
 	}
 
-	public String getStartingTime() {
-		return startingTime;
+	public String getSession() {
+		return session;
 	}
 
-	public void setStartingTime(String startingTime) {
-		this.startingTime = startingTime;
-	}
-
-	public String getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
+	public void setSession(String session) {
+		this.session = session;
 	}
 
 	public List<Schedule> getSchedules() {
@@ -60,7 +56,5 @@ public class Time {
 
 	public void setSchedules(List<Schedule> schedules) {
 		this.schedules = schedules;
-	}
-	
-	
+	}		
 }

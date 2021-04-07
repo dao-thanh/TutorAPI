@@ -15,6 +15,7 @@ public class AddTutorRequest {
 	private Set<String> teachingDate;
 	private String username;
 	private String rating;
+	private Set<String> session;
 	
 	public String getRating() {
 		return rating;
@@ -74,7 +75,10 @@ public class AddTutorRequest {
 	public void setSubjects(Set<String> subjects) {
 		this.subjects = subjects;
 	}
-		
-	
-	
+	public Set<String> getSession() {
+		return session;
+	}
+	public void setSession(Set<String> session) {
+		this.session = session;
+	}
 }

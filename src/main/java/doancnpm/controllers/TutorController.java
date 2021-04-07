@@ -1,27 +1,21 @@
 package doancnpm.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import doancnpm.models.Tutor;
-
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.security.ITutorService;
 
@@ -33,14 +27,25 @@ public class TutorController {
 	@Autowired
 	private ITutorService tutorService;
 	
-	public ObjectMapper getObjectMapper() {
-	    ObjectMapper mapper = new ObjectMapper();
-	    mapper.addMixIn(Object.class, IgnoreHibernatePropertiesInJackson.class);
-	    return mapper;
-	}
+//	public ObjectMapper getObjectMapper() {
+//	    ObjectMapper mapper = new ObjectMapper();
+//	    mapper.addMixIn(Object.class, IgnoreHibernatePropertiesInJackson.class);
+//	    return mapper;
+//	}
+//
+//	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//	private abstract class IgnoreHibernatePropertiesInJackson{ }
+	
+	@GetMapping("/tutor/{id}")
+	  public ResponseEntity<Tutor> getTutorById(@PathVariable("id") long id) {
+	    Tutor tutorData = tutorService.findTutorById(id);
 
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	private abstract class IgnoreHibernatePropertiesInJackson{ }
+	    if (tutorData != null) {
+	      return new ResponseEntity<>(tutorData, HttpStatus.OK);
+	    } else {
+	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	    }
+	  }
 	
 	@GetMapping(value = "/tutor")
 	public Map<String,List<Tutor>> all(){
@@ -61,7 +66,7 @@ public class TutorController {
 		return response;
 	
 	}
-	
+	@GetMapping
 	@PostMapping(value = "/tutor")
 	public void createNew(@RequestBody AddTutorRequest model) {
 		tutorService.save(model);

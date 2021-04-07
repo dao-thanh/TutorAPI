@@ -10,6 +10,8 @@ import doancnpm.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+	
+	
 	Optional<User> findByUsername(String username);
 
 	Boolean existsByUsername(String username);
@@ -18,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 
 	User findOneByusername(String username);
+	
+	//User findUserById(Long id);
 }

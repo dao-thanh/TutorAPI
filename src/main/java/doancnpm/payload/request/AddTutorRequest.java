@@ -1,11 +1,9 @@
 package doancnpm.payload.request;
 
-
 import java.util.Set;
 
-
-
 public class AddTutorRequest {
+	private Long id;
 	private String qualification;
 	private String avatar;
 	private String description;
@@ -15,8 +13,14 @@ public class AddTutorRequest {
 	private Set<String> teachingDate;
 	private String username;
 	private String rating;
-	private Set<String> session;
 	
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getRating() {
 		return rating;
 	}
@@ -75,10 +79,5 @@ public class AddTutorRequest {
 	public void setSubjects(Set<String> subjects) {
 		this.subjects = subjects;
 	}
-	public Set<String> getSession() {
-		return session;
-	}
-	public void setSession(Set<String> session) {
-		this.session = session;
-	}
+
 }

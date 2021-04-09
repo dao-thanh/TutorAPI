@@ -10,4 +10,5 @@ public interface ITutorService {
 	List<Tutor> findAll();
 	void save(AddTutorRequest addTutorRequest);
 	Tutor findTutorById(Long id);
+	void delete(long[] ids);
 }

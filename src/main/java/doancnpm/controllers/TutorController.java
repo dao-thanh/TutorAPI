@@ -8,15 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import doancnpm.models.Tutor;
 import doancnpm.payload.request.AddTutorRequest;
+import doancnpm.payload.request.AddUserRequest;
 import doancnpm.security.ITutorService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -66,9 +69,23 @@ public class TutorController {
 		return response;
 	
 	}
-	@GetMapping
+	
+	
 	@PostMapping(value = "/tutor")
 	public void createNew(@RequestBody AddTutorRequest model) {
 		tutorService.save(model);
 	}
+	
+	@PutMapping(value = "/tutor/{id}")
+	public String updateUser(@RequestBody AddTutorRequest model, @PathVariable("id") long id) {  
+		model.setId(id);
+		tutorService.save(model);
+	    return "Update tutor is success";  
+	  }  
+	
+	@DeleteMapping(value = "/tutor")
+	public void deleteUser(@RequestBody long[] ids) {
+		tutorService.delete(ids);
+	}
+	
 }

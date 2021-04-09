@@ -1,6 +1,5 @@
 package doancnpm.security.services;
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -13,14 +12,14 @@ import doancnpm.converter.TutorConverter;
 import doancnpm.models.Grade;
 import doancnpm.models.Schedule;
 import doancnpm.models.Subject;
-import doancnpm.models.Time;
+
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.repository.GradeRepository;
 import doancnpm.repository.ScheduleRepository;
 import doancnpm.repository.SubjectRepository;
-import doancnpm.repository.TimeRepository;
+
 import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
 import doancnpm.security.ITutorService;
@@ -37,8 +36,7 @@ public class TutorService implements ITutorService{
 	private SubjectRepository subjectRepository;
 	@Autowired
 	private ScheduleRepository scheduleRepository;
-	@Autowired
-	private TimeRepository timeRepository;
+	
 	 
 	@Autowired
 	UserRepository userRepository;
@@ -82,6 +80,7 @@ public class TutorService implements ITutorService{
 		
 		Set<String> strGrade = addTutorRequest.getGrade();
 		Set<Grade> grades = new HashSet<>();
+		
 		strGrade.forEach(grade ->{
 			switch(grade) {
 			case "Lớp 1":
@@ -99,66 +98,35 @@ public class TutorService implements ITutorService{
 		
 		Set<String> strSchedule = addTutorRequest.getTeachingDate();
 		Set<Schedule> schedules = new HashSet<>();
-		Set<String> strTime = addTutorRequest.getSession();
-		Set<Time> times = new HashSet<>();
-		
+	
 		strSchedule.forEach(schedule -> {
 			switch(schedule) {
-			case "Thứ 2":
-				Schedule thu2 = scheduleRepository.findByteachingDate("Thứ 2")
-					.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
-				
-				strTime.forEach(time -> {
-					switch(time) {
-					case "Sáng":
-						Time sang = timeRepository.findBysession("Sáng")
-							.orElseThrow(() -> new RuntimeException("Error: Session is not found."));
-						times.add(sang);
-						break;
-					case "Chiều":
-						Time chieu = timeRepository.findBysession("Chiều")
-							.orElseThrow(() -> new RuntimeException("Error: Session is not found."));
-						times.add(chieu);
-						break;
-					case "Tối":
-						Time toi = timeRepository.findBysession("Tối")
-							.orElseThrow(() -> new RuntimeException("Error: Session is not found."));
-						times.add(toi);
-						break;
-					}
-				});
-				thu2.setTimes(times);
-				schedules.add(thu2);
+			case "Thứ 2_Sáng":
+				Schedule thu2_sang = scheduleRepository.findByteachingDate("Thứ 2_Sáng")
+					.orElseThrow(() -> new RuntimeException("Error: Schedule is not found."));	
+				schedules.add(thu2_sang);
 				break;
-			case "Thứ 3":
-				Schedule thu3 = scheduleRepository.findByteachingDate("Thứ 2")
-					.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
-				strTime.forEach(time -> {
-					switch(time) {
-					case "Sáng":
-						Time sang = timeRepository.findBysession("Sáng")
-							.orElseThrow(() -> new RuntimeException("Error: Session is not found."));
-						times.add(sang);
-						break;
-					case "Chiều":
-						Time chieu = timeRepository.findBysession("Chiều")
-							.orElseThrow(() -> new RuntimeException("Error: Session is not found."));
-						times.add(chieu);
-						break;
-					case "Tối":
-						Time toi = timeRepository.findBysession("Tối")
-							.orElseThrow(() -> new RuntimeException("Error: Session is not found."));
-						times.add(toi);
-						break;
-					}
-				});
-				thu3.setTimes(times);
-				schedules.add(thu3);
+			case "Thứ 2_Chiều":
+				Schedule thu2_chieu = scheduleRepository.findByteachingDate("Thứ 2_Chiều")
+					.orElseThrow(() -> new RuntimeException("Error: Schedule is not found."));
+				schedules.add(thu2_chieu);
 				break;
+			case "Thứ 2_Tối":
+				Schedule thu2_toi = scheduleRepository.findByteachingDate("Thứ 2_Tối")
+					.orElseThrow(() -> new RuntimeException("Error: Schedule is not found."));
+				schedules.add(thu2_toi);
+				break;	
 			}
 		});
-				
-		Tutor tutor = tutorConverter.toTutor(addTutorRequest);	
+		Tutor tutor = new Tutor();
+		
+		if(addTutorRequest.getId() != null) {
+			Tutor oldTutor = tutorRepository.findOne(addTutorRequest.getId());
+			tutor = tutorConverter.toTutor(addTutorRequest, oldTutor);
+		}else {
+			tutor = tutorConverter.toTutor(addTutorRequest);
+		}
+		//Tutor tutor = tutorConverter.toTutor(addTutorRequest);	
 		tutor.setGrades(grades);
 		tutor.setSubjects(subjects);
 		
@@ -168,5 +136,13 @@ public class TutorService implements ITutorService{
 		
 		
 		tutor = tutorRepository.save(tutor);	
+	}
+
+	@Override
+	public void delete(long[] ids) {
+		for(long item:ids) {
+			tutorRepository.delete(item);
+		}
+		
 	}	
 }

@@ -114,7 +114,6 @@ public class Tutor implements Serializable{
 		this.avatar = avatar;
 	}
 
-	
 
 	public String getDescription() {
 		return description;

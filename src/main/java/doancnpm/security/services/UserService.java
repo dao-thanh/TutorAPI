@@ -48,5 +48,12 @@ public class UserService implements IUserService{
 		User userData = userRepository.findOne(id);
 		return userData;
 	}
-
+	
+	@Override
+	public void delete(long[] ids) {
+		for(long item:ids) {
+			userRepository.delete(item);
+		}
+	}
+	
 }

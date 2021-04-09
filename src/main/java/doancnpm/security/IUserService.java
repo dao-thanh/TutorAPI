@@ -10,4 +10,5 @@ public interface IUserService {
 	 List<User> all();
 	 User getUserById(long id);
 	void save(AddUserRequest addUser);
+	void delete(long[] ids);
 }

@@ -36,19 +36,16 @@ public class Schedule {
 //	@JsonIgnoreProperties("schedules")
 //	private Time time;
 	
-//	@OneToMany(mappedBy = "schedule")
-//	@JsonIgnoreProperties("schedule")
-//	private List<Tutor> tutors = new ArrayList<>();
 	
 	@ManyToMany(mappedBy = "schedules")
 	@JsonIgnoreProperties("schedules")
 	private List<Tutor> tutors = new ArrayList<>();
 	
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "schedule_time", joinColumns = @JoinColumn(name = "schedule_id"), inverseJoinColumns = @JoinColumn(name = "time_id"))
-	@JsonIgnoreProperties("schedules")
-	private Set<Time> times = new HashSet<>();
+//	
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	@JoinTable(name = "schedule_time", joinColumns = @JoinColumn(name = "schedule_id"), inverseJoinColumns = @JoinColumn(name = "time_id"))
+//	@JsonIgnoreProperties("schedules")
+//	private Set<Time> times = new HashSet<>();
 	
 	
 	public Integer getId() {
@@ -65,15 +62,6 @@ public class Schedule {
 
 	public void setTeachingDate(String teachingDate) {
 		this.teachingDate = teachingDate;
-	}
-
-
-	public Set<Time> getTimes() {
-		return times;
-	}
-
-	public void setTimes(Set<Time> times) {
-		this.times = times;
 	}
 
 	public List<Tutor> getTutors() {

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddUserRequest;
 import doancnpm.security.IUserService;
-
-
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -52,7 +51,6 @@ public class UserController {
 	  }
 	
 	@PutMapping(value = "/user/{id}")
-	
 	public String updateUser(@RequestBody AddUserRequest model, @PathVariable("id") long id) {
 		
 //	    Optional<User> userEdit = userService.findUserById(userId);  
@@ -61,5 +59,10 @@ public class UserController {
 		userService.save(model);
 	    return "Update user is success";  
 	  }  
+	
+	@DeleteMapping(value = "/user")
+	public void deleteUser(@RequestBody long[] ids) {
+		userService.delete(ids);
+	}
 	
 }

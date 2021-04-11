@@ -1,7 +1,9 @@
 package doancnpm.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -71,8 +74,18 @@ public class Tutor implements Serializable{
 	@JsonIgnoreProperties("tutors")
 	private Set<Schedule> schedules = new HashSet<>();
 	
+	@OneToMany(mappedBy = "tutor")
+	private List<Message> messages = new ArrayList<>();
 	
-	
+
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(List<Message> messages) {
+		this.messages = messages;
+	}
+
 	public String getRating() {
 		return rating;
 	}

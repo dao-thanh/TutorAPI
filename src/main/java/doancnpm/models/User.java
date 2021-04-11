@@ -1,11 +1,15 @@
 package doancnpm.models;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
 
 import javax.validation.constraints.Size;
+
+
 
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
@@ -33,20 +37,42 @@ public class User {
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
-
+	
+	
 	@Size(max = 120)
 	private String password;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
-
+	
+	@OneToMany(mappedBy = "user")
+	private List<Message> messages = new ArrayList<>();
+	
 	public User() {
 	}
 	
 	
 	
-//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
+	
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(List<Message> messages) {
+		this.messages = messages;
+	}
+
+	public Tutor getTutor() {
+		return tutor;
+	}
+
+	public void setTutor(Tutor tutor) {
+		this.tutor = tutor;
+	}
+
+
+	//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
 //            fetch = FetchType.LAZY, optional = false)
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Tutor tutor;

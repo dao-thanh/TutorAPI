@@ -1,23 +1,27 @@
 package doancnpm.security.services;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import doancnpm.converter.TutorConverter;
 import doancnpm.models.Grade;
-import doancnpm.models.Schedule;
+
 import doancnpm.models.Subject;
 
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.repository.GradeRepository;
-import doancnpm.repository.ScheduleRepository;
+
 import doancnpm.repository.SubjectRepository;
 
 import doancnpm.repository.TutorRepository;
@@ -34,9 +38,7 @@ public class TutorService implements ITutorService{
 	private GradeRepository gradeRepository;
 	@Autowired
 	private SubjectRepository subjectRepository;
-	@Autowired
-	private ScheduleRepository scheduleRepository;
-	
+		
 	 
 	@Autowired
 	UserRepository userRepository;
@@ -96,28 +98,15 @@ public class TutorService implements ITutorService{
 			}
 		});
 		
-		Set<String> strSchedule = addTutorRequest.getTeachingDate();
-		Set<Schedule> schedules = new HashSet<>();
-	
-		strSchedule.forEach(schedule -> {
-			switch(schedule) {
-			case "Thứ 2_Sáng":
-				Schedule thu2_sang = scheduleRepository.findByteachingDate("Thứ 2_Sáng")
-					.orElseThrow(() -> new RuntimeException("Error: Schedule is not found."));	
-				schedules.add(thu2_sang);
-				break;
-			case "Thứ 2_Chiều":
-				Schedule thu2_chieu = scheduleRepository.findByteachingDate("Thứ 2_Chiều")
-					.orElseThrow(() -> new RuntimeException("Error: Schedule is not found."));
-				schedules.add(thu2_chieu);
-				break;
-			case "Thứ 2_Tối":
-				Schedule thu2_toi = scheduleRepository.findByteachingDate("Thứ 2_Tối")
-					.orElseThrow(() -> new RuntimeException("Error: Schedule is not found."));
-				schedules.add(thu2_toi);
-				break;	
-			}
-		});
+		Map<String,Boolean> schedule = addTutorRequest.getSchedule();
+//		 try {
+//	            String jsonResp = mapperObj.writeValueAsString(inputMap);
+//	            System.out.println(jsonResp);
+//	        } catch (IOException e) {
+//	            // TODO Auto-generated catch block
+//	            e.printStackTrace();
+//	        }
+		
 		Tutor tutor = new Tutor();
 		
 		if(addTutorRequest.getId() != null) {
@@ -130,11 +119,20 @@ public class TutorService implements ITutorService{
 		tutor.setGrades(grades);
 		tutor.setSubjects(subjects);
 		
-		tutor.setSchedules(schedules);
+		String jsonResp = "";
+		ObjectMapper mapperObj = new ObjectMapper();
+		try {
+			jsonResp = mapperObj.writeValueAsString(schedule);
+            System.out.println(jsonResp);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            
+        }
 		
-		tutor.setUser(user);
-		
-		
+		tutor.setSchedule(jsonResp);
+			
+		tutor.setUser(user);	
 		tutor = tutorRepository.save(tutor);	
 	}
 

@@ -30,7 +30,7 @@ public class UserController {
 	private IUserService userService;
 	
 	@GetMapping(value = "/user")
-	//@PreAuthorize("hasRole('TUTOR')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public Map<String,List<User>> all(){
 		List<User> user = userService.all();
 		Map<String,List<User>> response=new HashMap<String, List<User>>();
@@ -39,7 +39,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/user/{id}")
-	
+	@PreAuthorize("hasRole('ADMIN')")
 	  public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
 	    User userData = userService.getUserById(id);
 
@@ -51,6 +51,7 @@ public class UserController {
 	  }
 	
 	@PutMapping(value = "/user/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String updateUser(@RequestBody AddUserRequest model, @PathVariable("id") long id) {
 		
 //	    Optional<User> userEdit = userService.findUserById(userId);  
@@ -61,6 +62,7 @@ public class UserController {
 	  }  
 	
 	@DeleteMapping(value = "/user")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteUser(@RequestBody long[] ids) {
 		userService.delete(ids);
 	}

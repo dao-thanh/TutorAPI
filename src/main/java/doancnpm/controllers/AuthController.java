@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,16 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import doancnpm.models.ERole;
 import doancnpm.models.Role;
+import doancnpm.models.Tutor;
 import doancnpm.models.User;
+import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.LoginRequest;
 import doancnpm.payload.request.SignupRequest;
 import doancnpm.payload.response.JwtResponse;
 import doancnpm.payload.response.MessageResponse;
 import doancnpm.repository.RoleRepository;
+import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.ITutorService;
 import doancnpm.security.jwt.JwtUtils;
 import doancnpm.security.services.UserDetailsImpl;
-
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -42,6 +46,8 @@ public class AuthController {
 
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	private TutorRepository tutorRepository;
 
 	@Autowired
 	RoleRepository roleRepository;
@@ -52,9 +58,12 @@ public class AuthController {
 	@Autowired
 	JwtUtils jwtUtils;
 	
+	@Autowired
+	private ITutorService tutorService;
 	
-	
+
 	@PostMapping("/signin")
+	
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
@@ -117,7 +126,6 @@ public class AuthController {
 					Role tutorRole = roleRepository.findByName(ERole.ROLE_TUTOR)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(tutorRole);
-					
 					break;
 				default:
 					Role studentRole = roleRepository.findByName(ERole.ROLE_STUDENT)
@@ -126,10 +134,15 @@ public class AuthController {
 				}
 			});
 		}
-
-		user.setRoles(roles);
+		user.setRoles(roles);	
 		userRepository.save(user);
-
+		if(strRoles.contains("tutor")){
+			Tutor tutor = new Tutor();
+			tutor.setUser(user);
+			tutorRepository.save(tutor);
+			//tutorService.save(addTutorRequest);
+		}
+			
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 }

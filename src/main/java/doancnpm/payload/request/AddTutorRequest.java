@@ -1,5 +1,6 @@
 package doancnpm.payload.request;
 
+import java.util.Map;
 import java.util.Set;
 
 public class AddTutorRequest {
@@ -13,10 +14,24 @@ public class AddTutorRequest {
 	private Set<String> teachingDate;
 	private String username;
 	private String rating;
+	private Map<String,Boolean> schedule;
 	
+	
+//	public String getSchedule() {
+//		return schedule;
+//	}
+//	public void setSchedule(String schedule) {
+//		this.schedule = schedule;
+//	}
 	
 	public Long getId() {
 		return id;
+	}
+	public Map<String, Boolean> getSchedule() {
+		return schedule;
+	}
+	public void setSchedule(Map<String, Boolean> schedule) {
+		this.schedule = schedule;
 	}
 	public void setId(Long id) {
 		this.id = id;

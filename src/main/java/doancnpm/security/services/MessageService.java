@@ -1,5 +1,7 @@
 package doancnpm.security.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,18 @@ public class MessageService implements IMessageService{
 		message.setTutor(tutor);
 		
 		message = messageRepository.save(message);
+	}
+
+	@Override
+	public List<Message> all() {
+		List<Message> messages = messageRepository.findAll();
+		return messages;
+	}
+
+	@Override
+	public Message getMessageById(long id) {
+		Message message = messageRepository.findOne(id);
+		return message;
 	}
 	
 }

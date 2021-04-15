@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 import javax.validation.constraints.Size;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
@@ -19,7 +19,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Size(max = 20)
+	@Size(max = 50)
 	private String username;
 
 	@Size(max = 50)
@@ -30,6 +30,33 @@ public class User {
 
 	private String phonenumber;
 
+	@Size(max = 120)
+	private String password;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
+
+	@OneToMany(mappedBy = "user")
+	@JsonIgnoreProperties("user")
+	private List<Message> messages = new ArrayList<>();
+
+	public User() {
+	}
+
+	public User(String username, String email, String phonenumber, String password) {
+		this.username = username;
+		this.email = email;
+		this.phonenumber = phonenumber;
+		this.password = password;
+	}
+
+	// @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
+	//  fetch = FetchType.LAZY, optional = false)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("user")
+	private Tutor tutor;
+
 	public String getPhonenumber() {
 		return phonenumber;
 	}
@@ -37,24 +64,7 @@ public class User {
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
-	
-	
-	@Size(max = 120)
-	private String password;
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
-	
-	@OneToMany(mappedBy = "user")
-	private List<Message> messages = new ArrayList<>();
-	
-	public User() {
-	}
-	
-	
-	
-	
 	public List<Message> getMessages() {
 		return messages;
 	}
@@ -69,19 +79,6 @@ public class User {
 
 	public void setTutor(Tutor tutor) {
 		this.tutor = tutor;
-	}
-
-
-	//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY, optional = false)
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Tutor tutor;
-
-	public User(String username, String email, String phonenumber, String password) {
-		this.username = username;
-		this.email = email;
-		this.phonenumber = phonenumber;
-		this.password = password;
 	}
 
 	public Long getId() {

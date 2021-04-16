@@ -56,6 +56,20 @@ public class User {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("user")
 	private Tutor tutor;
+	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("user")
+	private Student student;
+	
+
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
 
 	public String getPhonenumber() {
 		return phonenumber;

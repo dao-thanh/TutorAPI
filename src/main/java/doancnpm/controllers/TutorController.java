@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import doancnpm.models.Tutor;
+import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.AddUserRequest;
 import doancnpm.security.ITutorService;
@@ -32,11 +33,8 @@ public class TutorController {
 	@Autowired
 	private ITutorService tutorService;
 	
-	
-	
-	
 	@GetMapping("/tutor/{id}")
-	
+	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
 	  public ResponseEntity<Tutor> getTutorById(@PathVariable("id") long id) {
 	    Tutor tutorData = tutorService.findTutorById(id);
 
@@ -48,16 +46,16 @@ public class TutorController {
 	  }
 	
 	@GetMapping(value = "/tutor")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
 	public Map<String,List<Tutor>> all(){
 		System.out.println("ok");
 		List<Tutor> tutors = tutorService.findAll();
-		for(int i=0;i<tutors.size();i++)
-		{
-			String schedule = tutors.get(i).getSchedule();
-			JSONObject jsonObject= new JSONObject(schedule );
-			System.out.println(jsonObject);
-		}
+//		for(int i=0;i<tutors.size();i++)
+//		{
+//			String schedule = tutors.get(i).getSchedule();
+//			JSONObject jsonObject= new JSONObject(schedule );
+//			System.out.println(jsonObject);
+//		}
 		Map<String,List<Tutor>> response=new HashMap<String, List<Tutor>>();
 		
 		response.put("tutors", tutors);
@@ -75,8 +73,9 @@ public class TutorController {
 	}
 	
 	
+	
 	@PostMapping(value = "/tutor")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
 	public void createNew(@RequestBody AddTutorRequest model) {
 		tutorService.save(model);
 	}

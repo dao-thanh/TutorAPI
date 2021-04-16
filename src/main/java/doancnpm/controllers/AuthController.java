@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import doancnpm.models.ERole;
 import doancnpm.models.Role;
+import doancnpm.models.Student;
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
@@ -31,6 +32,7 @@ import doancnpm.payload.request.SignupRequest;
 import doancnpm.payload.response.JwtResponse;
 import doancnpm.payload.response.MessageResponse;
 import doancnpm.repository.RoleRepository;
+import doancnpm.repository.StudentRepository;
 import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
 import doancnpm.security.ITutorService;
@@ -48,6 +50,8 @@ public class AuthController {
 	UserRepository userRepository;
 	@Autowired
 	private TutorRepository tutorRepository;
+	@Autowired
+	private StudentRepository studentRepository;
 
 	@Autowired
 	RoleRepository roleRepository;
@@ -61,6 +65,7 @@ public class AuthController {
 	@Autowired
 	private ITutorService tutorService;
 	
+
 
 	@PostMapping("/signin")
 	
@@ -134,6 +139,7 @@ public class AuthController {
 				}
 			});
 		}
+		
 		user.setRoles(roles);	
 		userRepository.save(user);
 		if(strRoles.contains("tutor")){
@@ -142,7 +148,14 @@ public class AuthController {
 			tutorRepository.save(tutor);
 			//tutorService.save(addTutorRequest);
 		}
-			
+		else
+		if(strRoles.contains("student")) {
+			Student student = new Student();
+			student.setUser(user);
+			studentRepository.save(student);
+		}
+		
+		
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 }

@@ -76,6 +76,8 @@ public class Tutor implements Serializable{
 	@JsonIgnoreProperties("tutor")
 	private List<Message> messages = new ArrayList<>();
 	
+	
+	
 //	@Column(name = "sang_2")
 //	private boolean sang_2 = false;
 //	@Column(name = "chieu_2")

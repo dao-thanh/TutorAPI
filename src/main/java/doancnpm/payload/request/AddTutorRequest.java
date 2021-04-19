@@ -6,7 +6,6 @@ import java.util.Set;
 public class AddTutorRequest {
 	private Long id;
 	private String qualification;
-	private String avatar;
 	private String description;
 	private Set<String> subjects;
 	private Set<String> grade;
@@ -61,13 +60,7 @@ public class AddTutorRequest {
 	public void setQualification(String qualification) {
 		this.qualification = qualification;
 	}
-	public String getAvatar() {
-		return avatar;
-	}
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-	
+
 	public String getDescription() {
 		return description;
 	}

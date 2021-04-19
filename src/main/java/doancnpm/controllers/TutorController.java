@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
@@ -76,16 +79,28 @@ public class TutorController {
 	
 	@PostMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public void createNew(@RequestBody AddTutorRequest model) {
-		tutorService.save(model);
+	public String createNew(@RequestBody AddTutorRequest model, @RequestParam("file") MultipartFile file) {
+		String fileName = tutorService.storeFile(file);
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
+		tutorService.save(model, file);
+		return fileDownloadUri;
 	}
 	
 	@PutMapping(value = "/tutor/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public String updateUser(@RequestBody AddTutorRequest model, @PathVariable("id") long id) {  
+	public String updateUser(@RequestBody AddTutorRequest model, @PathVariable("id") long id, @RequestParam("file") MultipartFile file) {  
 		model.setId(id);
-		tutorService.save(model);
-	    return "Update tutor is success";  
+		String fileName = tutorService.storeFile(file);
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
+		tutorService.save(model, file);
+		String message = "Update tutor is success !\n" + fileDownloadUri;
+	    return message;  
 	}  
 	
 	@DeleteMapping(value = "/tutor")

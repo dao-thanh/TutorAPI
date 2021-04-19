@@ -10,7 +10,6 @@ public class TutorConverter {
 	public Tutor toTutor(AddTutorRequest addTutorRequest)
 	{
 		Tutor tutor = new Tutor();
-		tutor.setAvatar(addTutorRequest.getAvatar());
 		tutor.setRating(addTutorRequest.getRating());
 		tutor.setAddress(addTutorRequest.getAddress());
 		tutor.setDescription(addTutorRequest.getDescription());
@@ -19,7 +18,6 @@ public class TutorConverter {
 	}
 	public Tutor toTutor(AddTutorRequest addTutorRequest, Tutor tutor)
 	{
-		tutor.setAvatar(addTutorRequest.getAvatar());
 		tutor.setRating(addTutorRequest.getRating());
 		tutor.setAddress(addTutorRequest.getAddress());
 		tutor.setDescription(addTutorRequest.getDescription());

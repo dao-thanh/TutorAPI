@@ -11,11 +11,9 @@ public class TutorConverter {
 	{
 		Tutor tutor = new Tutor();
 		tutor.setAvatar(addTutorRequest.getAvatar());
-		tutor.setAddressId(addTutorRequest.getAddressId());
+		tutor.setRating(addTutorRequest.getRating());
+		tutor.setAddress(addTutorRequest.getAddress());
 		tutor.setDescription(addTutorRequest.getDescription());
-		tutor.setGradeId(addTutorRequest.getGradeId());
-		tutor.setSubjectId(addTutorRequest.getSubjectId());
-		tutor.setTime(addTutorRequest.getTime());
 		tutor.setQualification(addTutorRequest.getQualification());
 		return tutor;
 	}

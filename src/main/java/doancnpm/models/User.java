@@ -59,8 +59,7 @@ public class User {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Tutor tutor;
 
-	@OneToMany(mappedBy = "user")
-	private List<Post> post = new ArrayList<>();
+	
 
 	public User(String username, String email, String phonenumber, String password) {
 		this.username = username;

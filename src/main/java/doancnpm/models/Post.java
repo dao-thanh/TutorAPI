@@ -49,15 +49,17 @@ public class Post {
 	private String schedule;
 
 	@ManyToOne
-	@JoinColumn(name = "userId")
-	private User user;
+	@JoinColumn(name = "studentId")
+	private Student student;
 
-	public User getUser() {
-		return user;
+	
+
+	public Student getStudent() {
+		return student;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	public String getGrade() {

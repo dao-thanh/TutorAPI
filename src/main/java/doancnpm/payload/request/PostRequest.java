@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class PostRequest extends BaseRequest<PostRequest> {
 
-	private String username;
+	private String student;
 	private String title;
 	private String description;
 	private String subject;
@@ -24,12 +24,14 @@ public class PostRequest extends BaseRequest<PostRequest> {
 		this.schedule = schedule;
 	}
 
-	public String getUsername() {
-		return username;
+	
+
+	public String getStudent() {
+		return student;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setStudent(String student) {
+		this.student = student;
 	}
 
 	public String getSubject() {

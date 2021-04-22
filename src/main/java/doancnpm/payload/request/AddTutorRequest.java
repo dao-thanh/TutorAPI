@@ -10,8 +10,6 @@ public class AddTutorRequest {
 	private Set<String> subjects;
 	private Set<String> grade;
 	private String address;
-	private Set<String> teachingDate;
-	private String username;
 	private String rating;
 	private Map<String,Boolean> schedule;
 	
@@ -41,19 +39,9 @@ public class AddTutorRequest {
 	public void setRating(String rating) {
 		this.rating = rating;
 	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
+
 	
-	public Set<String> getTeachingDate() {
-		return teachingDate;
-	}
-	public void setTeachingDate(Set<String> teachingDate) {
-		this.teachingDate = teachingDate;
-	}
+	
 	public String getQualification() {
 		return qualification;
 	}

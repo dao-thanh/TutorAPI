@@ -10,7 +10,7 @@ import doancnpm.payload.request.AddTutorRequest;
 
 public interface ITutorService {
 	List<Tutor> findAll();
-	void save(AddTutorRequest addTutorRequest);
+	void save(String username, AddTutorRequest addTutorRequest);
 	Tutor findTutorById(Long id);
 	void delete(long[] ids);
 }

@@ -70,7 +70,7 @@ public class FileController {
 		
         String fileName = fileStorageService.storeFile(file);
         Tutor tutor = tutorRepository.findByuser_id(user.getId())
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: "));
+				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
         System.out.println(tutor.getId());
         //Tutor tutor = tutorRepository.findOne((long) 1);
         tutor.setAvatar(fileName);

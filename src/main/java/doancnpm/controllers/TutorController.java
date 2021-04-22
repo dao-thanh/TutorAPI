@@ -51,6 +51,7 @@ public class TutorController {
 	@GetMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
 	public Map<String,List<Tutor>> all(){
+		
 		System.out.println("ok");
 		List<Tutor> tutors = tutorService.findAll();
 //		for(int i=0;i<tutors.size();i++)
@@ -79,27 +80,18 @@ public class TutorController {
 	
 	@PostMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public String createNew(@RequestBody AddTutorRequest model, @RequestParam("file") MultipartFile file) {
-		String fileName = tutorService.storeFile(file);
-		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
-		tutorService.save(model, file);
-		return fileDownloadUri;
+	public void createNew(@RequestBody AddTutorRequest model) {
+	
+		tutorService.save(model);
+		
 	}
 	
 	@PutMapping(value = "/tutor/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public String updateUser(@RequestBody AddTutorRequest model, @PathVariable("id") long id, @RequestParam("file") MultipartFile file) {  
+	public String updateUser(@RequestBody AddTutorRequest model, @PathVariable("id") long id) {  
 		model.setId(id);
-		String fileName = tutorService.storeFile(file);
-		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
-		tutorService.save(model, file);
-		String message = "Update tutor is success !\n" + fileDownloadUri;
+		tutorService.save(model);
+		String message = "Update tutor is success !\n";
 	    return message;  
 	}  
 	

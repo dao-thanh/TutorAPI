@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "tutor")
-@ConfigurationProperties(prefix = "file")
+
 public class Tutor implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,8 +79,6 @@ public class Tutor implements Serializable{
 	@JsonIgnoreProperties("tutor")
 	private List<Message> messages = new ArrayList<>();
 	
-	@Column(name = "upload_dir")
-	private String uploadDir;
 	
 	
 	
@@ -133,14 +131,6 @@ public class Tutor implements Serializable{
 //	@Column(name = "toi_8")
 //	private boolean toi_8 = false;
 	
-	public String getUploadDir() {
-		return uploadDir;
-	}
-
-	public void setUploadDir(String uploadDir) {
-		this.uploadDir = uploadDir;
-	}
-
 	@Column(name="schedule")
 	private String schedule;
 	

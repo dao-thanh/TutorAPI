@@ -13,9 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import doancnpm.converter.PostConverter;
 import doancnpm.models.Post;
-import doancnpm.models.User;
+import doancnpm.models.Student;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.repository.PostRepository;
+import doancnpm.repository.StudentRepository;
 import doancnpm.repository.UserRepository;
 import doancnpm.security.iPostService;
 
@@ -29,6 +30,9 @@ public class PostService implements iPostService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private StudentRepository studentRepository;
+
+	@Autowired
 	private PostConverter postConverter;
 
 	@Override
@@ -40,8 +44,10 @@ public class PostService implements iPostService {
 		} else {
 			postEntity = postConverter.toEntity(postDTO);
 		}
-		User userEntity = userRepository.findOneByUsername(postDTO.getUsername());
-		postEntity.setUser(userEntity);
+		// User userEntity = userRepository.findOneByUsername(postDTO.getUsername());
+		// postEntity.setUser(userEntity);
+		Student studentEntity = studentRepository.findOneById(postDTO.getStudentID());
+		postEntity.setStudent(studentEntity);
 		Map<String, Boolean> schedule = postDTO.getSchedule();
 		String jsonResp = "";
 		ObjectMapper mapperObj = new ObjectMapper();

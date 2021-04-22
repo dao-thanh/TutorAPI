@@ -13,8 +13,16 @@ public class PostRequest extends BaseRequest<PostRequest> {
 	private String price;
 	private String phoneNumber;
 	private String address;
-	private Map<String,Boolean> schedule;
-	
+	private Long studentID;
+	private Map<String, Boolean> schedule;
+
+	public Long getStudentID() {
+		return studentID;
+	}
+
+	public void setStudentID(Long studentID) {
+		this.studentID = studentID;
+	}
 
 	public Map<String, Boolean> getSchedule() {
 		return schedule;
@@ -23,8 +31,6 @@ public class PostRequest extends BaseRequest<PostRequest> {
 	public void setSchedule(Map<String, Boolean> schedule) {
 		this.schedule = schedule;
 	}
-
-	
 
 	public String getStudent() {
 		return student;

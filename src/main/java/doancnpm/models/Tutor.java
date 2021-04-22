@@ -28,11 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "tutor")
-<<<<<<< HEAD
-@ConfigurationProperties(prefix = "file")
-=======
 
->>>>>>> thanh
 public class Tutor implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,22 +74,11 @@ public class Tutor implements Serializable{
 	@JsonIgnoreProperties("tutors")
 	private Set<Grade> grades = new HashSet<>();
 	
-<<<<<<< HEAD
-=======
 	
 	@OneToMany(mappedBy = "tutor")
 	@JsonIgnoreProperties("tutor")
 	private List<Message> messages = new ArrayList<>();
 	
-	
->>>>>>> thanh
-	
-	@OneToMany(mappedBy = "tutor")
-	@JsonIgnoreProperties("tutor")
-	private List<Message> messages = new ArrayList<>();
-	
-	@Column(name = "upload_dir")
-	private String uploadDir;
 	
 	
 	
@@ -146,72 +131,9 @@ public class Tutor implements Serializable{
 //	@Column(name = "toi_8")
 //	private boolean toi_8 = false;
 	
-<<<<<<< HEAD
-	public String getUploadDir() {
-		return uploadDir;
-	}
-
-	public void setUploadDir(String uploadDir) {
-		this.uploadDir = uploadDir;
-	}
-
 	@Column(name="schedule")
 	private String schedule;
 	
-=======
-//	@Column(name = "sang_2")
-//	private boolean sang_2 = false;
-//	@Column(name = "chieu_2")
-//	private boolean chieu_2 = false;
-//	@Column(name = "toi_2")
-//	private boolean toi_2 = false;
-//	
-//	@Column(name = "sang_3")
-//	private boolean sang_3 = false;
-//	@Column(name = "chieu_3")
-//	private boolean chieu_3 = false;
-//	@Column(name = "toi_3")
-//	private boolean toi_3 = false;
-//	
-//	@Column(name = "sang_4")
-//	private boolean sang_4 = false;
-//	@Column(name = "chieu_4")
-//	private boolean chieu_4 = false;
-//	@Column(name = "toi_4")
-//	private boolean toi_4 = false;
-//	
-//	@Column(name = "sang_5")
-//	private boolean sang_5 = false;
-//	@Column(name = "chieu_5")
-//	private boolean chieu_5 = false;
-//	@Column(name = "toi_5")
-//	private boolean toi_5 = false;
-//	
-//	@Column(name = "sang_6")
-//	private boolean sang_6 = false;
-//	@Column(name = "chieu_6")
-//	private boolean chieu_6 = false;
-//	@Column(name = "toi_6")
-//	private boolean toi_6 = false;
-//	
-//	@Column(name = "sang_7")
-//	private boolean sang_7 = false;
-//	@Column(name = "chieu_7")
-//	private boolean chieu_7 = false;
-//	@Column(name = "toi_7")
-//	private boolean toi_7 = false;
-//	
-//	@Column(name = "sang_8")
-//	private boolean sang_8 = false;
-//	@Column(name = "chieu_8")
-//	private boolean chieu_8 = false;
-//	@Column(name = "toi_8")
-//	private boolean toi_8 = false;
-	
-	@Column(name="schedule")
-	private String schedule;
-	
->>>>>>> thanh
 	public List<Message> getMessages() {
 		return messages;
 	}

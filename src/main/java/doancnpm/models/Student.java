@@ -46,5 +46,7 @@ public class Student {
 	private List<Post> post = new ArrayList<>();
 	
 	
+	@OneToMany(mappedBy = "student")
+	private List<Invitation> invitations = new ArrayList<>();
 }
 

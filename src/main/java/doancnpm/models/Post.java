@@ -2,14 +2,17 @@ package doancnpm.models;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -52,7 +55,18 @@ public class Post {
 	@JoinColumn(name = "studentId")
 	private Student student;
 
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	private Suggestion suggestion;
 	
+	
+
+	public Suggestion getSuggestion() {
+		return suggestion;
+	}
+
+	public void setSuggestion(Suggestion suggestion) {
+		this.suggestion = suggestion;
+	}
 
 	public Student getStudent() {
 		return student;

@@ -1,9 +1,12 @@
 package doancnpm.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,16 +16,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-
 @Entity
 @Table(name = "tutor")
-public class Tutor implements Serializable{
+public class Tutor implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,24 +34,22 @@ public class Tutor implements Serializable{
 
 	@Column(name = "avatar")
 	private String avatar;
-	
+
 	@Column(name = "rating")
 	private String rating;
-	
 
 	@Column(name = "description")
 	private String description;
-
 
 	@Column(name = "address")
 	private String address;
 
 	@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-	//@OneToOne(fetch = FetchType.LAZY)
-    //@MapsId
-    private User user;
-	
+	@JoinColumn(name = "user_id")
+	// @OneToOne(fetch = FetchType.LAZY)
+	// @MapsId
+	private User user;
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tutor_subject", joinColumns = @JoinColumn(name = "tutor_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	@JsonIgnoreProperties("tutors")
@@ -59,20 +59,17 @@ public class Tutor implements Serializable{
 //	@JoinColumn(name="subjectId")
 //	@JsonIgnoreProperties("tutors")
 //	private Subject subject; 
-	
-	
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tutor_grade", joinColumns = @JoinColumn(name = "tutor_id"), inverseJoinColumns = @JoinColumn(name = "grade_id"))
 	@JsonIgnoreProperties("tutors")
 	private Set<Grade> grades = new HashSet<>();
-	
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tutor_schedule", joinColumns = @JoinColumn(name = "tutor_id"), inverseJoinColumns = @JoinColumn(name = "schedule_id"))
 	@JsonIgnoreProperties("tutors")
 	private Set<Schedule> schedules = new HashSet<>();
-	
-	
-	
+
 	public String getRating() {
 		return rating;
 	}
@@ -80,8 +77,7 @@ public class Tutor implements Serializable{
 	public void setRating(String rating) {
 		this.rating = rating;
 	}
-	
-	
+
 	public Set<Schedule> getSchedules() {
 		return schedules;
 	}
@@ -114,8 +110,6 @@ public class Tutor implements Serializable{
 		this.avatar = avatar;
 	}
 
-	
-
 	public String getDescription() {
 		return description;
 	}
@@ -123,7 +117,6 @@ public class Tutor implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 
 	public String getAddress() {
 		return address;
@@ -133,7 +126,6 @@ public class Tutor implements Serializable{
 		this.address = address;
 	}
 
-	
 	public User getUser() {
 		return user;
 	}
@@ -156,6 +148,29 @@ public class Tutor implements Serializable{
 
 	public void setGrades(Set<Grade> grades) {
 		this.grades = grades;
-	}		
+	}
+
+	@OneToOne(mappedBy = "tutor", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	private Invitation invitation;
+
+	public Invitation getInvitation() {
+		return invitation;
+	}
+
+	public void setInvitation(Invitation invitation) {
+		this.invitation = invitation;
+	}
 	
+	@OneToMany(mappedBy = "tutor")
+	private List<Suggestion> suggestions = new ArrayList<>();
+
+	public List<Suggestion> getSuggestions() {
+		return suggestions;
+	}
+
+	public void setSuggestions(List<Suggestion> suggestions) {
+		this.suggestions = suggestions;
+	}
+	
+
 }

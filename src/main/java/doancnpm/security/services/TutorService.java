@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,10 +57,12 @@ public class TutorService implements ITutorService {
 
 	
 	@Override
-	public void save(AddTutorRequest addTutorRequest) {
-
-		User user = userRepository.findOneByusername(addTutorRequest.getUsername());
-
+	public void save(String username, AddTutorRequest addTutorRequest) {
+		
+		
+		User user = userRepository.findOneByusername(username);
+		
+		
 		Set<String> strSubject = addTutorRequest.getSubjects();
 		Set<Subject> subjects = new HashSet<>();
 		strSubject.forEach(subject -> {
@@ -75,6 +78,31 @@ public class TutorService implements ITutorService {
 						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
 				subjects.add(tienganh);
 				break;
+			case "Hóa":
+				Subject hoa = subjectRepository.findBysubjectname("Hóa")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(hoa);
+				break;
+		
+			case "Lý":
+			Subject ly = subjectRepository.findBysubjectname("Lý")
+					.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+			subjects.add(ly);
+			break;
+			case "Ngữ Văn":
+				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(nguvan);
+				break;
+			case "Lịch Sử":
+				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(lichsu);
+				break;	
 			}
 		});
 
@@ -93,6 +121,51 @@ public class TutorService implements ITutorService {
 						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
 				grades.add(lop2);
 				break;
+			case "Lớp 3":
+				Grade lop3 = gradeRepository.findBygradename("Lớp 3")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop3);
+				break;
+			case "Lớp 4":
+				Grade lop4 = gradeRepository.findBygradename("Lớp 4")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop4);
+				break;
+			case "Lớp 5":
+				Grade lop5 = gradeRepository.findBygradename("Lớp 5")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop5);
+				break;
+			case "Lớp 6":
+				Grade lop6 = gradeRepository.findBygradename("Lớp 6")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop6);
+				break;	
+			case "Lớp 8":
+				Grade lop8 = gradeRepository.findBygradename("Lớp 8")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop8);
+				break;	
+			case "Lớp 9":
+				Grade lop9 = gradeRepository.findBygradename("Lớp 9")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop9);
+				break;	
+			case "Lớp 10":
+				Grade lop10 = gradeRepository.findBygradename("Lớp 10")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop10);
+				break;	
+			case "Lớp 11":
+				Grade lop11 = gradeRepository.findBygradename("Lớp 11")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop11);
+				break;	
+			case "Lớp 12":
+				Grade lop12 = gradeRepository.findBygradename("Lớp 12")
+						.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+				grades.add(lop12);
+				break;		
 			}
 		});
 
@@ -104,16 +177,12 @@ public class TutorService implements ITutorService {
 //	            // TODO Auto-generated catch block
 //	            e.printStackTrace();
 //	        }
-
 		Tutor tutor = new Tutor();
-
-		if (addTutorRequest.getId() != null) {
-			Tutor oldTutor = tutorRepository.findOne(addTutorRequest.getId());
-			tutor = tutorConverter.toTutor(addTutorRequest, oldTutor);
-		} else {
-			tutor = tutorConverter.toTutor(addTutorRequest);
-		}
-		// Tutor tutor = tutorConverter.toTutor(addTutorRequest);
+		Tutor oldTutor = tutorRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
+		
+		tutor = tutorConverter.toTutor(addTutorRequest, oldTutor);
+		
 		tutor.setGrades(grades);
 		tutor.setSubjects(subjects);
 

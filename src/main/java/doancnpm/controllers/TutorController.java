@@ -8,9 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +32,9 @@ import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.AddUserRequest;
+import doancnpm.payload.response.TutorResponse;
+import doancnpm.repository.TutorRepository;
+import doancnpm.repository.UserRepository;
 import doancnpm.security.ITutorService;
 import doancnpm.security.jwt.JwtUtils;
 
@@ -43,11 +49,16 @@ public class TutorController {
 	@Autowired
 	private JwtUtils jwtUtils;
 	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+    private TutorRepository tutorRepository;
+	
 	@GetMapping("/tutor/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
 	  public ResponseEntity<Tutor> getTutorById(@PathVariable("id") long id) {
 	    Tutor tutorData = tutorService.findTutorById(id);
-
 	    if (tutorData != null) {
 	      return new ResponseEntity<>(tutorData, HttpStatus.OK);
 	    } else {
@@ -57,7 +68,7 @@ public class TutorController {
 	
 	@GetMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
-	public Map<String,List<Tutor>> all(){
+	public Map<String,List<Tutor>> showTutor(){
 		
 		System.out.println("ok");
 		List<Tutor> tutors = tutorService.findAll();
@@ -83,7 +94,21 @@ public class TutorController {
 	
 	}
 	
-	
+//	@GetMapping(value = "/pagetutor")
+//	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
+//	public TutorResponse showTutorPage(@RequestParam("page") int page, @RequestParam("limit") int limit){
+//		
+//		
+//		TutorResponse result = new TutorResponse();
+//		result.setPage(page);
+//		Pageable pageable = new PageRequest(page - 1, limit);
+//		result.setListResult(tutorService.findAllPage(pageable));
+//		
+//		result.setTotalPage((int) Math.ceil((double) (tutorService.totalItem()) / limit));
+//		
+//		return result;
+//	
+//	}
 	
 //	@PostMapping(value = "/tutor")
 //	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
@@ -93,17 +118,21 @@ public class TutorController {
 //		
 //	}
 	
-	@PutMapping(value = "/tutor/{id}")
+	@PutMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public String updateUser(HttpServletRequest request, @RequestBody AddTutorRequest model, @PathVariable("id") long id) {
+	public String updateUser(HttpServletRequest request, @RequestBody AddTutorRequest model) {
 		
 		String jwt = parseJwt(request);
     	String username ="";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
-		}
-	
-		model.setId(id);
+		}	
+//		User user = userRepository.findByUsername(username)
+//				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username"));
+//
+//		
+//        Tutor tutor = tutorRepository.findByuser_id(user.getId())
+//				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
 		tutorService.save(username, model);
 		String message = "Update tutor is success !\n";
 	    return message;  

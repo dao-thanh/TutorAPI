@@ -1,12 +1,14 @@
 package doancnpm.security.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,6 @@ import doancnpm.security.ITutorService;
 
 @Service
 public class TutorService implements ITutorService {
-
 
 
 	@Autowired
@@ -209,7 +210,15 @@ public class TutorService implements ITutorService {
 		}
 
 	}
+	@Override
+	public List<Tutor> findAllPage(Pageable pageable) {
+		return tutorRepository.findAll(pageable).getContent();
+	}
 
-
+	@Override
+	public int totalItem() {
+		// TODO Auto-generated method stub
+		return (int) tutorRepository.count();
+	}
 
 }

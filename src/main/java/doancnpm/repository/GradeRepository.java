@@ -9,5 +9,4 @@ import doancnpm.models.Grade;
 
 public interface GradeRepository extends JpaRepository<Grade, Long>{
 	Optional<Grade> findBygradename(String gradeName);
-	
 }

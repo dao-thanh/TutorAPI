@@ -1,5 +1,7 @@
 package doancnpm.controllers;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.AddUserRequest;
+import doancnpm.payload.response.TutorOutput;
 import doancnpm.payload.response.TutorResponse;
 import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
@@ -68,19 +73,53 @@ public class TutorController {
 	
 	@GetMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
-	public Map<String,List<Tutor>> showTutor(){
+	public Map<String,List<TutorOutput>> showTutor(){
 		
 		System.out.println("ok");
 		List<Tutor> tutors = tutorService.findAll();
-//		for(int i=0;i<tutors.size();i++)
-//		{
-//			String schedule = tutors.get(i).getSchedule();
-//			JSONObject jsonObject= new JSONObject(schedule );
-//			System.out.println(jsonObject);
-//		}
-		Map<String,List<Tutor>> response=new HashMap<String, List<Tutor>>();
+		List<TutorOutput> tutorOutputs = new ArrayList<TutorOutput>();
+		for(int i=0;i<tutors.size();i++)
+		{
+			
+			String schedule = tutors.get(i).getSchedule();
+			//JSONObject jsonObject= new JSONObject(schedule );
+			
+			
+			TutorOutput tutorOutput = new TutorOutput();
+			tutorOutput.setId(tutors.get(i).getId());
+			tutorOutput.setQualification(tutors.get(i).getQualification());
+			tutorOutput.setAvatar(tutors.get(i).getAvatar());
+			tutorOutput.setRating(tutors.get(i).getRating());
+			tutorOutput.setDescription(tutors.get(i).getDescription());
+			tutorOutput.setAddress(tutors.get(i).getAddress());
+			tutorOutput.setUser(tutors.get(i).getUser());
+			tutorOutput.setSubjects(tutors.get(i).getSubjects());
+			tutorOutput.setGrades(tutors.get(i).getGrades());
 		
-		response.put("tutors", tutors);
+			
+			//tutorOutput.setSchedule(jsonObject);
+			try {
+				Map<String,Boolean> schedules =new ObjectMapper().readValue(schedule, HashMap.class);
+				System.out.println(schedules);
+				tutorOutput.setSchedules(schedules);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			tutorOutputs.add(tutorOutput);
+			
+			
+			
+			
+		}
+		
+		
+		
+		Map<String,List<TutorOutput>> response=new HashMap<String, List<TutorOutput>>();
+		
+		response.put("tutors", tutorOutputs);
 //		//return ResponseEntity.ok(response);
 //		Gson gson=new Gson();
 //		

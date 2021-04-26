@@ -79,7 +79,9 @@ public class Tutor implements Serializable{
 	@JsonIgnoreProperties("tutor")
 	private List<Message> messages = new ArrayList<>();
 	
-	
+	@OneToMany(mappedBy = "tutor")
+	@JsonIgnoreProperties("tutor")
+	private List<Invitation> invitations = new ArrayList<>();
 	
 	
 //	@Column(name = "sang_2")
@@ -88,49 +90,9 @@ public class Tutor implements Serializable{
 //	private boolean chieu_2 = false;
 //	@Column(name = "toi_2")
 //	private boolean toi_2 = false;
-//	
-//	@Column(name = "sang_3")
-//	private boolean sang_3 = false;
-//	@Column(name = "chieu_3")
-//	private boolean chieu_3 = false;
-//	@Column(name = "toi_3")
-//	private boolean toi_3 = false;
-//	
-//	@Column(name = "sang_4")
-//	private boolean sang_4 = false;
-//	@Column(name = "chieu_4")
-//	private boolean chieu_4 = false;
-//	@Column(name = "toi_4")
-//	private boolean toi_4 = false;
-//	
-//	@Column(name = "sang_5")
-//	private boolean sang_5 = false;
-//	@Column(name = "chieu_5")
-//	private boolean chieu_5 = false;
-//	@Column(name = "toi_5")
-//	private boolean toi_5 = false;
-//	
-//	@Column(name = "sang_6")
-//	private boolean sang_6 = false;
-//	@Column(name = "chieu_6")
-//	private boolean chieu_6 = false;
-//	@Column(name = "toi_6")
-//	private boolean toi_6 = false;
-//	
-//	@Column(name = "sang_7")
-//	private boolean sang_7 = false;
-//	@Column(name = "chieu_7")
-//	private boolean chieu_7 = false;
-//	@Column(name = "toi_7")
-//	private boolean toi_7 = false;
-//	
-//	@Column(name = "sang_8")
-//	private boolean sang_8 = false;
-//	@Column(name = "chieu_8")
-//	private boolean chieu_8 = false;
-//	@Column(name = "toi_8")
-//	private boolean toi_8 = false;
-	
+
+
+
 	@Column(name="schedule")
 	private String schedule;
 	
@@ -225,6 +187,14 @@ public class Tutor implements Serializable{
 
 	public void setSchedule(String schedule) {
 		this.schedule = schedule;
+	}
+
+	public List<Invitation> getInvitations() {
+		return invitations;
+	}
+
+	public void setInvitations(List<Invitation> invitations) {
+		this.invitations = invitations;
 	}
 
 	

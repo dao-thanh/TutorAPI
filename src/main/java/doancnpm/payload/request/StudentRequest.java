@@ -1,20 +1,10 @@
 package doancnpm.payload.request;
 
-public class AddUserRequest {
-	private Long id;
+public class StudentRequest {
 	private String username;
 	private String email;
 	private String password;
 	private String phonenumber;
-	
-	
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public String getUsername() {
 		return username;
 	}
@@ -39,5 +29,4 @@ public class AddUserRequest {
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
-	
 }

@@ -11,9 +11,13 @@ public class PostConverter {
 	public Post toEntity(PostRequest dto) {
 		Post entity = new Post();
 		entity.setTitle(dto.getTitle());
-		entity.setContent(dto.getContent());
+		entity.setDescription(dto.getDescription());
 		entity.setGrade(dto.getGrade());
 		entity.setSubject(dto.getSubject());
+		entity.setPrice(dto.getPrice());
+		entity.setPhoneNumber(dto.getPhoneNumber());
+		entity.setAddress(dto.getAddress());
+
 		return entity;
 	}
 
@@ -23,20 +27,27 @@ public class PostConverter {
 			dto.setId(entity.getId());
 		}
 		dto.setTitle(entity.getTitle());
-		dto.setContent(entity.getContent());
+		dto.setDescription(entity.getDescription());
 		dto.setGrade(entity.getGrade());
 		dto.setSubject(entity.getSubject());
+		dto.setPrice(entity.getPrice());
+		dto.setPhoneNumber(entity.getPhoneNumber());
+		dto.setAddress(entity.getAddress());
 		dto.setCreatedDate(entity.getCreatedDate());
 		dto.setModifiedDate(entity.getModifiedDate());
+
 		return dto;
 	}
 
 	public Post toEntity(PostRequest dto, Post entity) {
 
 		entity.setTitle(dto.getTitle());
-		entity.setContent(dto.getContent());
+		entity.setDescription(dto.getDescription());
 		entity.setGrade(dto.getGrade());
 		entity.setSubject(dto.getSubject());
+		entity.setPrice(dto.getPrice());
+		entity.setPhoneNumber(dto.getPhoneNumber());
+		entity.setAddress(dto.getAddress());
 		return entity;
 	}
 }

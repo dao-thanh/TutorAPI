@@ -196,6 +196,17 @@ public class Tutor implements Serializable{
 	public void setInvitations(List<Invitation> invitations) {
 		this.invitations = invitations;
 	}
+	@OneToMany(mappedBy = "tutor")
+	private List<Suggestion> suggestions = new ArrayList<>();
+
+	public List<Suggestion> getSuggestions() {
+		return suggestions;
+	}
+
+	public void setSuggestions(List<Suggestion> suggestions) {
+		this.suggestions = suggestions;
+	}
+	
 
 	
 

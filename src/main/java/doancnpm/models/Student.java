@@ -31,7 +31,8 @@ public class Student {
 	@JsonIgnoreProperties("student")
 	private List<Invitation> invitations = new ArrayList<>();
 	
-	
+	@OneToMany(mappedBy = "student")
+	private List<Post> post = new ArrayList<>();
 	
 
 	public List<Invitation> getInvitations() {

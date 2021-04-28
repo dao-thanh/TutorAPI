@@ -166,12 +166,6 @@ public class TutorController {
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}	
-//		User user = userRepository.findByUsername(username)
-//				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username"));
-//
-//		
-//        Tutor tutor = tutorRepository.findByuser_id(user.getId())
-//				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
 		tutorService.save(username, model);
 		String message = "Update tutor is success !\n";
 	    return message;  

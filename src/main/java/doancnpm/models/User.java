@@ -27,7 +27,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Size(max = 20)
+	@Size(max = 50)
 	private String username;
 
 	@Size(max = 50)
@@ -38,6 +38,47 @@ public class User {
 
 	private String phonenumber;
 
+	@Size(max = 120)
+	private String password;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
+
+//	@OneToMany(mappedBy = "user")
+//	@JsonIgnoreProperties("user")
+//	private List<Message> messages = new ArrayList<>();
+
+	public User() {
+	}
+
+	public User(String username, String email, String phonenumber, String password) {
+		this.username = username;
+		this.email = email;
+		this.phonenumber = phonenumber;
+		this.password = password;
+	}
+
+	// @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
+	//  fetch = FetchType.LAZY, optional = false)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("user")
+	private Tutor tutor;
+	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("user")
+	private Student student;
+	
+
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
 	public String getPhonenumber() {
 		return phonenumber;
 	}
@@ -46,30 +87,20 @@ public class User {
 		this.phonenumber = phonenumber;
 	}
 
-	@Size(max = 120)
-	private String password;
+//	public List<Message> getMessages() {
+//		return messages;
+//	}
+//
+//	public void setMessages(List<Message> messages) {
+//		this.messages = messages;
+//	}
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
-
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnoreProperties("user")
-	private Student student;
-
-	public User() {
+	public Tutor getTutor() {
+		return tutor;
 	}
 
-//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY, optional = false)
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Tutor tutor;
-
-	public User(String username, String email, String phonenumber, String password) {
-		this.username = username;
-		this.email = email;
-		this.phonenumber = phonenumber;
-		this.password = password;
+	public void setTutor(Tutor tutor) {
+		this.tutor = tutor;
 	}
 
 	public Long getId() {
@@ -111,13 +142,4 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
-
-	public Tutor getTutor() {
-		return tutor;
-	}
-
-	public void setTutor(Tutor tutor) {
-		this.tutor = tutor;
-	}
-
 }

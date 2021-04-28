@@ -2,10 +2,16 @@ package doancnpm.security;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import doancnpm.models.Tutor;
 import doancnpm.payload.request.AddTutorRequest;
 
 public interface ITutorService {
 	List<Tutor> findAll();
-	void save(AddTutorRequest addTutorRequest);
+	List<Tutor> findAllPage(Pageable pageable);
+	int totalItem();
+	void save(String username, AddTutorRequest addTutorRequest);
+	Tutor findTutorById(Long id);
+	void delete(long[] ids);
 }

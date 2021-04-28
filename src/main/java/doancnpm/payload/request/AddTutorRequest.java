@@ -4,8 +4,11 @@ package doancnpm.payload.request;
 import java.util.Set;
 
 
+import java.util.Map;
+import java.util.Set;
 
 public class AddTutorRequest {
+	private Long id;
 	private String qualification;
 	private String avatar;
 	private String description;
@@ -15,13 +18,9 @@ public class AddTutorRequest {
 	private Set<String> teachingDate;
 	private String username;
 	private String rating;
+	private Map<String,Boolean> schedule;
 	
-	public String getRating() {
-		return rating;
-	}
-	public void setRating(String rating) {
-		this.rating = rating;
-	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -29,25 +28,37 @@ public class AddTutorRequest {
 		this.username = username;
 	}
 	
-	public Set<String> getTeachingDate() {
-		return teachingDate;
+
+	
+	public Long getId() {
+		return id;
 	}
-	public void setTeachingDate(Set<String> teachingDate) {
-		this.teachingDate = teachingDate;
+	public Map<String, Boolean> getSchedule() {
+		return schedule;
 	}
+	public void setSchedule(Map<String, Boolean> schedule) {
+		this.schedule = schedule;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	public String getRating() {
+		return rating;
+	}
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+
+	
+	
 	public String getQualification() {
 		return qualification;
 	}
 	public void setQualification(String qualification) {
 		this.qualification = qualification;
 	}
-	public String getAvatar() {
-		return avatar;
-	}
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -74,7 +85,4 @@ public class AddTutorRequest {
 	public void setSubjects(Set<String> subjects) {
 		this.subjects = subjects;
 	}
-		
-	
-	
 }

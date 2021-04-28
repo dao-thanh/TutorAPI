@@ -27,6 +27,22 @@ public class Student {
 	@JsonIgnoreProperties("student")
     private User user;
 
+	@OneToMany(mappedBy = "student")
+	@JsonIgnoreProperties("student")
+	private List<Invitation> invitations = new ArrayList<>();
+	
+	// @OneToMany(mappedBy = "student")
+	// private List<Post> post = new ArrayList<>();
+	
+
+	public List<Invitation> getInvitations() {
+		return invitations;
+	}
+
+	public void setInvitations(List<Invitation> invitations) {
+		this.invitations = invitations;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -42,11 +58,6 @@ public class Student {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	@OneToMany(mappedBy = "student")
-	private List<Post> post = new ArrayList<>();
 	
 	
-	@OneToMany(mappedBy = "student")
-	private List<Invitation> invitations = new ArrayList<>();
 }
-

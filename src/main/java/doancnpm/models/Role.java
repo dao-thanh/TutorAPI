@@ -8,7 +8,7 @@ public class Role {
 	private Integer id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 20)
+	@Column(length = 60)
 	private ERole name;
 
 	public Role() {

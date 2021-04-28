@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import doancnpm.models.Post;
+import doancnpm.models.Tutor;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 	Optional<Post> findById(Long id);
@@ -24,5 +25,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	Page<Post> findBySubjectInAndAddressIn(String subject, String address, Pageable paging);
 
 	Page<Post> findByGradeInAndSubjectInAndAddress(String grade, String subject, String address, Pageable paging);
+
+	Post findOneById(Long id);
+	
+	Optional<Post> findByStudentId(long Id);
 
 }

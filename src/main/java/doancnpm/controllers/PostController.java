@@ -1,5 +1,6 @@
 package doancnpm.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +26,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import doancnpm.controllers.output.PostOutput;
 import doancnpm.models.Post;
+import doancnpm.models.Tutor;
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.PostRequest;
+import doancnpm.payload.response.PostOut;
+import doancnpm.payload.response.TutorOutput;
 import doancnpm.repository.PostRepository;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
@@ -45,7 +51,7 @@ public class PostController {
 	@Autowired
 	private JwtUtils jwtUtils;
 
-	@PostMapping(value = "/post")
+	@PostMapping(value = "/api/post")
 	@PreAuthorize("hasRole('STUDENT')")
 	public String createPost(HttpServletRequest request, @RequestBody PostRequest model) {
 
@@ -67,8 +73,8 @@ public class PostController {
 		return null;
 	}
 
-	@PutMapping(value = "/post/{id}")
-	@PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
+	@PutMapping(value = "/api/post/{id}")
+	@PreAuthorize("hasRole('STUDENT')")
 	public String updatePost(HttpServletRequest request, @RequestBody PostRequest model, @PathVariable("id") long id) {
 		String jwt = parseJwt(request);
 		String username = "";
@@ -79,44 +85,81 @@ public class PostController {
 		String message = "Update Post is success !\n";
 		return message;
 	}
-	
 
-	@DeleteMapping(value = "/post")
-	@PreAuthorize("hasRole('STUDENT')")
-	public void deletePost(@RequestBody long[] ids) {
-		postService.delete(ids);
+	@DeleteMapping(value = "/api/post/{id}")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+	public void deletePost(@PathVariable("id") long id) {
+		postService.delete(id);
+		System.out.println("Delete is successed");
+	}
+
+	@GetMapping("/post/{id}")
+	public Map<String, PostOut> getPostById(@PathVariable("id") long id) {
+		Post post = postService.findPostById(id);
+//		if (post != null) {
+//			return new ResponseEntity<>(post, HttpStatus.OK);
+//		} else {
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//		}
+		String schedules = post.getSchedule();
+		PostOut postOut = new PostOut();
+		postOut.setId(post.getId());
+		postOut.setAddress(post.getAddress());
+		postOut.setGrade(post.getGrade());
+		postOut.setSubject(post.getSubject());
+		postOut.setDescription(post.getDescription());
+		postOut.setPhoneNumber(post.getPhoneNumber());
+		postOut.setPrice(post.getPrice());
+		postOut.setTitle(post.getTitle());
+		postOut.setStudent(post.getStudent());
+		try {
+			Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
+			System.out.println(schedule);
+			postOut.setSchedule(schedule);
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		Map<String,PostOut> response = new HashMap<String, PostOut>();
+		response.put("post", postOut);
+		return response;
 	}
 
 	@GetMapping(value = "/post")
-	@PreAuthorize("hasRole('STUDENT')")
-	public PostOutput showPost(@RequestParam("page") int page, @RequestParam("limit") int limit) {
-		PostOutput result = new PostOutput();
-		result.setPage(page);
-		Pageable pageable = new PageRequest(page - 1, limit);
-		result.setListResultDTO(postService.findAll(pageable));
-		result.setTotalPage((int) Math.ceil((double) (postService.totalItem()) / limit));
-		return result;
-	}
-	
+	public Map<String, List<PostOut>> showPost() {
+		List<Post> post = postService.findAll();
+		List<PostOut> postOuts = new ArrayList<PostOut>();
+		for (int i = 0; i < post.size(); i++) {
+			String schedules = post.get(i).getSchedule();
+			PostOut postOut = new PostOut();
+			postOut.setId(post.get(i).getId());
+			postOut.setAddress(post.get(i).getAddress());
+			postOut.setGrade(post.get(i).getGrade());
+			postOut.setSubject(post.get(i).getSubject());
+			postOut.setDescription(post.get(i).getDescription());
+			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
+			postOut.setPrice(post.get(i).getPrice());
+			postOut.setTitle(post.get(i).getTitle());
+			postOut.setStudent(post.get(i).getStudent());
+			try {
+				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
+				System.out.println(schedule);
+				postOut.setSchedule(schedule);
+			} catch (IOException e) {
 
-	@GetMapping("/post/{id}")
-	@PreAuthorize("hasRole('STUDENT')")
-	public ResponseEntity<Post> readPostById(@PathVariable("id") long id) {
-		Post postData = postService.findPostById(id);
-
-		if (postData != null) {
-			return new ResponseEntity<>(postData, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				e.printStackTrace();
+			}
+			postOuts.add(postOut);
 		}
+		Map<String, List<PostOut>> response = new HashMap<String, List<PostOut>>();
+		response.put("post", postOuts);
+		return response;
 	}
 
 	@GetMapping("/post/apisearch")
-	@PreAuthorize("hasRole('STUDENT')")
 	public ResponseEntity<Map<String, Object>> getAllTutors(@RequestParam(required = false) String subject,
 			String grade, String address, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int size) {
-
 		try {
 			List<Post> posts = new ArrayList<Post>();
 			Pageable paging = new PageRequest(page, size);

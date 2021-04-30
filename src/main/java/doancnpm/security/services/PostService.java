@@ -154,10 +154,8 @@ public class PostService implements iPostService {
 	}
 
 	@Override
-	public void delete(long[] ids) {
-		for (long item : ids) {
-			postRepository.delete(item);
-		}
+	public void delete(long id) {
+		postRepository.delete(id);
 
 	}
 
@@ -182,6 +180,12 @@ public class PostService implements iPostService {
 	public Post findPostById(Long id) {
 
 		return postRepository.findOne(id);
+	}
+
+	@Override
+	public List<Post> findAll() {
+		// TODO Auto-generated method stub
+		return postRepository.findAll();
 	}
 
 }

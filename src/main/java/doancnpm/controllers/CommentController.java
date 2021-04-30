@@ -1,5 +1,6 @@
 package doancnpm.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +23,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import doancnpm.models.Comment;
+import doancnpm.models.Invitation;
+import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.CommentRequest;
 import doancnpm.payload.request.InvitationRequest;
+import doancnpm.payload.response.CommentResponse;
+import doancnpm.payload.response.InvitationResponse;
+import doancnpm.repository.TutorRepository;
+import doancnpm.repository.UserRepository;
 import doancnpm.security.ICommentService;
 import doancnpm.security.jwt.JwtUtils;
 
@@ -36,8 +44,45 @@ public class CommentController {
 	@Autowired
 	ICommentService commentService;
 	
+
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	private TutorRepository tutorRepository;
 	@Autowired
 	private JwtUtils jwtUtils;
+	
+	@GetMapping(value = "/comment")
+	@PreAuthorize("hasRole('TUTOR')")
+	public Map<String, List<CommentResponse>> getCommentByIdTutor(HttpServletRequest request) {
+		
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		
+		User user = userRepository.findOneByusername(username);
+		Tutor tutor = tutorRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
+		
+		List<Comment> comments = commentService.findByIdTutor(tutor.getId());
+		
+		List<CommentResponse> commentResponses = new ArrayList<CommentResponse>(); 
+				
+		for(int i=0;i < comments.size();i++) {
+			CommentResponse commentResponse = new CommentResponse();
+			commentResponse.setId(comments.get(i).getId());
+			commentResponse.setIdTutor(comments.get(i).getTutor().getId());
+			commentResponse.setIdStudent(comments.get(i).getStudent().getId());
+			commentResponse.setContent(comments.get(i).getContent());
+			commentResponses.add(commentResponse);
+		}
+		
+		Map<String, List<CommentResponse>> response = new HashMap<String, List<CommentResponse>>();
+		response.put("comments", commentResponses);
+		return response;
+	}
 	
 	@PostMapping(value = "/comment")
 	@PreAuthorize("hasRole('STUDENT')")

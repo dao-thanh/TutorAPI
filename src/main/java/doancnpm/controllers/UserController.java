@@ -51,7 +51,7 @@ public class UserController {
 	  }
 	
 	@PutMapping(value = "/user/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
 	public String updateUser(@RequestBody AddUserRequest model, @PathVariable("id") long id) {
 		
 //	    Optional<User> userEdit = userService.findUserById(userId);  

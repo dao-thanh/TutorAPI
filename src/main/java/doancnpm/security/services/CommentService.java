@@ -51,16 +51,12 @@ public class CommentService implements ICommentService{
 	}
 
 	@Override
-	public List<Comment> all() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Comment> findByIdTutor(long idTutor) {
+		
+		return  commentRepository.findBytutor_id(idTutor);
 	}
 
-	@Override
-	public Comment getMessageById(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 //	@Override
 //	public List<Comment> all() {

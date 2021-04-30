@@ -62,10 +62,35 @@ public class TutorController {
 
 	@GetMapping("/tutor/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
-	public ResponseEntity<Tutor> getTutorById(@PathVariable("id") long id) {
+	public ResponseEntity<TutorOutput> getTutorById(@PathVariable("id") long id) {
 		Tutor tutorData = tutorService.findTutorById(id);
+		
+		String schedule = tutorData.getSchedule();
+		TutorOutput tutorOutput = new TutorOutput();
+		tutorOutput.setId(tutorData.getId());
+		tutorOutput.setQualification(tutorData.getQualification());
+		tutorOutput.setAvatar(tutorData.getAvatar());
+		tutorOutput.setRating(tutorData.getRating());
+		tutorOutput.setDescription(tutorData.getDescription());
+		tutorOutput.setAddress(tutorData.getAddress());
+		tutorOutput.setUser(tutorData.getUser());
+		tutorOutput.setSubjects(tutorData.getSubjects());
+		tutorOutput.setGrades(tutorData.getGrades());
+
+		if (schedule != null) {
+			// tutorOutput.setSchedule(jsonObject);
+			try {
+				Map<String, Boolean> schedules = new ObjectMapper().readValue(schedule, HashMap.class);
+				System.out.println(schedules);
+				tutorOutput.setSchedules(schedules);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		if (tutorData != null) {
-			return new ResponseEntity<>(tutorData, HttpStatus.OK);
+			return new ResponseEntity<>(tutorOutput, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

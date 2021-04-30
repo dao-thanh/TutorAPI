@@ -1,5 +1,7 @@
 package doancnpm.security.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -77,7 +79,16 @@ public class InvitationService implements IInvitationService {
 		
 		invitationRepository.save(invitation);
 		
-	}	
+	}
+
+
+	@Override
+	public List<Invitation> findByIdTutor(long idTutor) {
+		return  invitationRepository.findBytutor_id(idTutor);
+	}
+
+
+	
 	
 	
 }

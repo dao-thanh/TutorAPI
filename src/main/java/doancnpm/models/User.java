@@ -37,9 +37,9 @@ public class User {
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	@OneToMany(mappedBy = "user")
-	@JsonIgnoreProperties("user")
-	private List<Comment> messages = new ArrayList<>();
+//	@OneToMany(mappedBy = "user")
+//	@JsonIgnoreProperties("user")
+//	private List<Comment> messages = new ArrayList<>();
 
 	public User() {
 	}
@@ -79,13 +79,7 @@ public class User {
 		this.phonenumber = phonenumber;
 	}
 
-	public List<Comment> getMessages() {
-		return messages;
-	}
 
-	public void setMessages(List<Comment> messages) {
-		this.messages = messages;
-	}
 
 	public Tutor getTutor() {
 		return tutor;

@@ -12,35 +12,26 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "invitations")
-public class Invitation {
-	
+@Table(name = "comments")
+public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
+	
+	@Column(name = "content")
+	private String content;
 	
 	@ManyToOne
 	@JoinColumn(name="student_id")
-	@JsonIgnoreProperties("invitations")
-	private Student student;
+	@JsonIgnoreProperties("comments")
+	private Student student; 
 	
 	@ManyToOne
 	@JoinColumn(name="tutor_id")
-	@JsonIgnoreProperties("invitations")
+	@JsonIgnoreProperties("comments")
 	private Tutor tutor;
 	
-	@Column(name = "status")
-	private int status;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	
 	public Student getStudent() {
 		return student;
 	}
@@ -57,12 +48,21 @@ public class Invitation {
 		this.tutor = tutor;
 	}
 
-	public int getStatus() {
-		return status;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
-	}	
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
 	
 }

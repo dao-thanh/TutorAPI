@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import doancnpm.converter.MessageConverter;
-import doancnpm.models.Message;
+import doancnpm.models.Comment;
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.MessageRequest;
@@ -28,7 +28,7 @@ public class MessageService implements IMessageService{
 	
 	@Override
 	public void save(MessageRequest messageRequest) {
-		Message message = new Message();
+		Comment message = new Comment();
 		message = messageConverter.toMessage(messageRequest);
 		
 		User user_Student = userRepository.findOneByusername(messageRequest.getStudentName());
@@ -43,14 +43,14 @@ public class MessageService implements IMessageService{
 	}
 
 	@Override
-	public List<Message> all() {
-		List<Message> messages = messageRepository.findAll();
+	public List<Comment> all() {
+		List<Comment> messages = messageRepository.findAll();
 		return messages;
 	}
 
 	@Override
-	public Message getMessageById(long id) {
-		Message message = messageRepository.findOne(id);
+	public Comment getMessageById(long id) {
+		Comment message = messageRepository.findOne(id);
 		return message;
 	}
 	

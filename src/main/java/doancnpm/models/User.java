@@ -39,7 +39,7 @@ public class User {
 
 	@OneToMany(mappedBy = "user")
 	@JsonIgnoreProperties("user")
-	private List<Message> messages = new ArrayList<>();
+	private List<Comment> messages = new ArrayList<>();
 
 	public User() {
 	}
@@ -79,11 +79,11 @@ public class User {
 		this.phonenumber = phonenumber;
 	}
 
-	public List<Message> getMessages() {
+	public List<Comment> getMessages() {
 		return messages;
 	}
 
-	public void setMessages(List<Message> messages) {
+	public void setMessages(List<Comment> messages) {
 		this.messages = messages;
 	}
 

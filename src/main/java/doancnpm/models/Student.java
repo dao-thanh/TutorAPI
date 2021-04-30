@@ -31,8 +31,20 @@ public class Student {
 	@JsonIgnoreProperties("student")
 	private List<Invitation> invitations = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "student")
+	@JsonIgnoreProperties("student")
+	private List<Comment> comments = new ArrayList<>();
 	
 	
+	
+	
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
 
 	public List<Invitation> getInvitations() {
 		return invitations;

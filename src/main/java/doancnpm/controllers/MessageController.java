@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import doancnpm.models.Message;
+import doancnpm.models.Comment;
 import doancnpm.models.User;
 import doancnpm.payload.request.MessageRequest;
 import doancnpm.security.IMessageService;
@@ -30,17 +30,17 @@ public class MessageController {
 	
 	
 	@GetMapping(value = "/message")
-	public Map<String, List<Message>> all(){
-		List<Message> messages = messageService.all();
-		Map<String,List<Message>> response = new HashMap<String, List<Message>>();
+	public Map<String, List<Comment>> all(){
+		List<Comment> messages = messageService.all();
+		Map<String,List<Comment>> response = new HashMap<String, List<Comment>>();
 		response.put("messages", messages);
 		return response;
 	}
 	
 	@GetMapping("/message/{id}")
-	 public ResponseEntity<Message> getMessageById(@PathVariable("id") long id) {
+	 public ResponseEntity<Comment> getMessageById(@PathVariable("id") long id) {
 	    //User userData = userService.getUserById(id);
-	    Message message = messageService.getMessageById(id);
+	    Comment message = messageService.getMessageById(id);
 
 	    if (message != null) {
 	      return new ResponseEntity<>(message, HttpStatus.OK);

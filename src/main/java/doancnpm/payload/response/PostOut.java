@@ -16,8 +16,15 @@ public class PostOut {
 	private String price;
 	private String phoneNumber;
 	private Map<String,Boolean> schedule;
-	@JsonIgnoreProperties("student")
-	private Student student;
+//	@JsonIgnoreProperties("student")
+//	private Student student;
+	private Long idStudent;
+	public Long getIdStudent() {
+		return idStudent;
+	}
+	public void setIdStudent(Long idStudent) {
+		this.idStudent = idStudent;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -72,12 +79,12 @@ public class PostOut {
 	public void setSchedule(Map<String, Boolean> schedule) {
 		this.schedule = schedule;
 	}
-	public Student getStudent() {
-		return student;
-	}
-	public void setStudent(Student student) {
-		this.student = student;
-	}
+//	public Student getStudent() {
+//		return student;
+//	}
+//	public void setStudent(Student student) {
+//		this.student = student;
+//	}
 	
 	
 }

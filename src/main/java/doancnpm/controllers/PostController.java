@@ -108,7 +108,7 @@ public class PostController {
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
-			postOut.setStudent(post.get(i).getStudent());
+			postOut.setIdStudent(student.getId());
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
@@ -163,7 +163,7 @@ public class PostController {
 		postOut.setPhoneNumber(post.getPhoneNumber());
 		postOut.setPrice(post.getPrice());
 		postOut.setTitle(post.getTitle());
-		postOut.setStudent(post.getStudent());
+		postOut.setIdStudent(post.getStudent().getId());
 		try {
 			Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 			System.out.println(schedule);
@@ -192,7 +192,7 @@ public class PostController {
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
-			postOut.setStudent(post.get(i).getStudent());
+			postOut.setIdStudent(post.get(i).getStudent().getId());
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);

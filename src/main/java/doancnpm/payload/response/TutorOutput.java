@@ -13,13 +13,13 @@ import doancnpm.models.User;
 
 public class TutorOutput {
 	private Long id;
+	private String name;
+	private String phonenumber;
 	private String qualification;
 	private String avatar;
 	private String rating;
 	private String description;
 	private String address;
-	@JsonIgnoreProperties("tutor")
-	private User user;
 	@JsonIgnoreProperties("tutors")
 	private Set<Subject> subjects;
 	private Set<Grade> grades;
@@ -58,9 +58,7 @@ public class TutorOutput {
 	public String getAddress() {
 		return address;
 	}
-	public User getUser() {
-		return user;
-	}
+	
 	public Set<Subject> getSubjects() {
 		return subjects;
 	}
@@ -84,11 +82,21 @@ public class TutorOutput {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public void setUser(User user) {
-		this.user = user;
-	}
+	
 	public void setSubjects(Set<Subject> subjects) {
 		this.subjects = subjects;
+	}
+	public String getName() {
+		return name;
+	}
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
 	}
 	
 }

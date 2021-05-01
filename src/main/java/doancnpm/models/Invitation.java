@@ -1,5 +1,7 @@
 package doancnpm.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,24 +15,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "invitations")
-public class Invitation {
+public class Invitation{
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-
 	@ManyToOne
 	@JoinColumn(name="student_id")
-	@JsonIgnoreProperties("invitations")
+	@JsonIgnoreProperties("invitation")
 	private Student student;
 	
 	@ManyToOne
 	@JoinColumn(name="tutor_id")
-	@JsonIgnoreProperties("invitations")
+	@JsonIgnoreProperties("invitation")
 	private Tutor tutor;
 	
 	@Column(name = "status")
-	private boolean status = false;
+	private int status;
 
 	public Long getId() {
 		return id;
@@ -57,14 +59,12 @@ public class Invitation {
 		this.tutor = tutor;
 	}
 
-	public boolean isStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(int status) {
 		this.status = status;
-	}
-	
-	
+	}	
 	
 }

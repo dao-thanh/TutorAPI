@@ -1,14 +1,21 @@
 package doancnpm.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "suggestion")
@@ -18,7 +25,8 @@ public class Suggestion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private Boolean status;
+	@Column(name = "status")
+	private int status;
 
 	public Long getId() {
 		return id;
@@ -28,28 +36,38 @@ public class Suggestion {
 		this.id = id;
 	}
 
-	public Boolean getStatus() {
+	
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(Boolean status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
+
+
+	@ManyToOne
+	@JoinColumn(name = "tutor_id")
+	@JsonIgnoreProperties("suggestion")
+	private Tutor tutor;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tutor_id")
-    private Tutor tutor;
+	@ManyToOne
+	@JoinColumn(name = "post_id")
+	@JsonIgnoreProperties("suggestion")
+	private Post post;
+	
+	@ManyToOne
+	@JoinColumn(name="student_id")
+	@JsonIgnoreProperties("suggestion")
+	private Student student;
 
-	public Tutor getTutor() {
-		return tutor;
+	public Student getStudent() {
+		return student;
 	}
 
-	public void setTutor(Tutor tutor) {
-		this.tutor = tutor;
+	public void setStudent(Student student) {
+		this.student = student;
 	}
-	@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
 
 	public Post getPost() {
 		return post;
@@ -58,5 +76,16 @@ public class Suggestion {
 	public void setPost(Post post) {
 		this.post = post;
 	}
+
+	public Tutor getTutor() {
+		return tutor;
+	}
+
+	public void setTutor(Tutor tutor) {
+		this.tutor = tutor;
+	}
+	
+	
+
 	
 }

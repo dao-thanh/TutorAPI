@@ -1,8 +1,16 @@
 package doancnpm.controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,44 +21,116 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import doancnpm.controllers.output.SuggestionOutput;
+import doancnpm.models.Student;
+import doancnpm.models.Suggestion;
+import doancnpm.models.User;
 import doancnpm.payload.request.SuggestionRequest;
-import doancnpm.repository.SuggestionRepository;
+import doancnpm.payload.response.SuggestionResponse;
+import doancnpm.repository.StudentRepository;
+import doancnpm.repository.UserRepository;
 import doancnpm.security.iSuggestionService;
+import doancnpm.security.jwt.JwtUtils;
 
 @CrossOrigin
 @RestController
 public class SuggestionController {
 
 	@Autowired
-	SuggestionRepository suggestionRepository;
-
+	private JwtUtils jwtUtils;
 	@Autowired
 	private iSuggestionService suggestionService;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private StudentRepository studentRepository;
+	
+	@PostMapping(value = "/api/suggestion/{idStudent}/{idPost}")
+	@PreAuthorize("hasRole('TUTOR')")
+	public void createSuggestion(HttpServletRequest request, @PathVariable("idStudent") long idStudent, @PathVariable("idPost") long idPost) {
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		suggestionService.save(username, idPost, idStudent);
+	}
+	
+	@PutMapping(value = "/api/suggestion/acceptance/{idPost}")
+	@PreAuthorize("hasRole('STUDENT')")
+	public void acceptSuggestion(HttpServletRequest request, @PathVariable("idPost") long idPost, @RequestBody SuggestionRequest model) {
 
-	@PostMapping(value = "/suggestion")
-	public SuggestionRequest createSuggestion(@RequestBody SuggestionRequest model) {
-		return suggestionService.save(model);
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		
+		suggestionService.accept(username, idPost, model.getId());
+	}
+	
+	@PutMapping(value = "/api/suggestion/denial/{idPost}")
+	@PreAuthorize("hasRole('STUDENT')")
+	public void denySuggestion(HttpServletRequest request, @PathVariable("idPost") long idPost, @RequestBody SuggestionRequest model) {
+
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		
+		suggestionService.reject(username, idPost, model.getId());
+	}
+	
+	@DeleteMapping(value = "/api/suggestion/{id}")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+	public void deleteSuggestion(HttpServletRequest request, @PathVariable("id") long id) {
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		suggestionService.delete(username, id);
+		System.out.println("Delete is successed");
 	}
 
-	@PutMapping(value = "/suggestion/{id}")
-	public SuggestionRequest updateSuggestion(@RequestBody SuggestionRequest model, @PathVariable("id") long id) {
-		model.setId(id);
-		return suggestionService.save(model);
+	
+	@GetMapping(value = "/api/suggestion")
+	@PreAuthorize("hasRole('STUDENT')")
+	public Map<String, List<SuggestionResponse>> getSuggestionByIdStudent(HttpServletRequest request) {
+		
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		User user = userRepository.findOneByusername(username);
+		Student student = studentRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
+		List<Suggestion> suggestions = suggestionService.findByIdStudent(student.getId());
+		
+		List<SuggestionResponse> suggestionResponses = new ArrayList<SuggestionResponse>();
+		for (int i = 0; i < suggestions.size(); i++) {
+			SuggestionResponse suggestionResponse = new SuggestionResponse();
+			suggestionResponse.setId(suggestions.get(i).getId());
+			suggestionResponse.setIdStudent(suggestions.get(i).getStudent().getId());
+			suggestionResponse.setIdTutor(suggestions.get(i).getTutor().getId());
+			suggestionResponse.setIdPost(suggestions.get(i).getPost().getId());
+			suggestionResponse.setStatus(suggestions.get(i).getStatus());
+			suggestionResponses.add(suggestionResponse);
+		}
+		Map<String, List<SuggestionResponse>> response = new HashMap<String, List<SuggestionResponse>>();
+		response.put("suggestions", suggestionResponses);
+		return response;
 	}
+	
+	
+	private String parseJwt(HttpServletRequest request) {
+		String headerAuth = request.getHeader("Authorization");
+		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
+			return headerAuth.replace("Bearer ", "");
+		}
+		return null;
+	}
+	
 
-	@DeleteMapping(value = "/suggestion")
-	public void deleteSuggestion(@RequestBody long[] ids) {
-		suggestionService.delete(ids);
-	}
-
-	@GetMapping(value = "/suggestion")
-	public SuggestionOutput showSuggestion(@RequestParam("page") int page, @RequestParam("limit") int limit) {
-		SuggestionOutput result = new SuggestionOutput();
-		result.setPage(page);
-		Pageable pageable = new PageRequest(page - 1, limit);
-		result.setListResultDTO(suggestionService.findAll(pageable));
-		result.setTotalPage((int) Math.ceil((double) (suggestionService.totalItem()) / limit));
-		return result;
-	}
 }

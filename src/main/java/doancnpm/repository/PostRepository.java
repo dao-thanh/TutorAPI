@@ -1,5 +1,6 @@
 package doancnpm.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -27,6 +28,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	Page<Post> findByGradeInAndSubjectInAndAddress(String grade, String subject, String address, Pageable paging);
 
 	Post findOneById(Long id);
+	
+	List<Post> findByStudent_id(long student_id);
 	
 	Optional<Post> findByStudentId(long Id);
 

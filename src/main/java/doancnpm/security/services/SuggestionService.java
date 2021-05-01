@@ -1,20 +1,21 @@
 package doancnpm.security.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import doancnpm.converter.SuggestionConverter;
 import doancnpm.models.Post;
+import doancnpm.models.Student;
 import doancnpm.models.Suggestion;
 import doancnpm.models.Tutor;
-import doancnpm.payload.request.SuggestionRequest;
+import doancnpm.models.User;
 import doancnpm.repository.PostRepository;
+import doancnpm.repository.StudentRepository;
 import doancnpm.repository.SuggestionRepository;
 import doancnpm.repository.TutorRepository;
+import doancnpm.repository.UserRepository;
 import doancnpm.security.iSuggestionService;
 
 @Service
@@ -24,54 +25,75 @@ public class SuggestionService implements iSuggestionService {
 	private SuggestionRepository suggestionRepository;
 
 	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private StudentRepository studentRepository;
+
+	@Autowired
 	private TutorRepository tutorRepository;
 
 	@Autowired
 	private PostRepository postRepository;
 
-	@Autowired
-	private SuggestionConverter suggestionConverter;
-
 	@Override
-	public SuggestionRequest save(SuggestionRequest suggestionDTO) {
-		Suggestion suggestionEntity = new Suggestion();
-		if (suggestionDTO.getId() != null) {
-			Suggestion oldInvitationEntity = suggestionRepository.findOne(suggestionDTO.getId());
-			suggestionEntity = suggestionConverter.toEntity(suggestionDTO, oldInvitationEntity);
-		} else {
-			suggestionEntity = suggestionConverter.toEntity(suggestionDTO);
-		}
+	public void save(String username, Long idPost, Long idStudent) {
+		User user = userRepository.findOneByusername(username);
 
-		Post postEntity = postRepository.findOneById(suggestionDTO.getPostID());
-		suggestionEntity.setPost(postEntity);
-		Tutor tutorEntity = tutorRepository.findOneById(suggestionDTO.getTutorID());
-		suggestionEntity.setTutor(tutorEntity);
-		suggestionEntity = suggestionRepository.save(suggestionEntity);
-		return suggestionConverter.toDTO(suggestionEntity);
-	}
+		Tutor tutor = tutorRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Tutor not found"));
 
-	@Override
-	public void delete(long[] ids) {
-		for (long item : ids) {
-			suggestionRepository.delete(item);
-		}
+		Post post = postRepository.findOne(idPost);
+		Student student=studentRepository.findOne(idStudent);
+		Suggestion suggestion = new Suggestion();
+		suggestion.setPost(post);
+		suggestion.setTutor(tutor);
+		suggestion.setStudent(student);
+		suggestion.setStatus(0);
+		suggestion = suggestionRepository.save(suggestion);
 
 	}
 
 	@Override
-	public List<SuggestionRequest> findAll(Pageable pageable) {
-		List<SuggestionRequest> results = new ArrayList<>();
-		List<Suggestion> entities = suggestionRepository.findAll(pageable).getContent();
-		for (Suggestion item : entities) {
-			SuggestionRequest suggestionDTO = suggestionConverter.toDTO(item);
-			results.add(suggestionDTO);
-		}
-		return results;
+	public void accept(String username, long idPost, long idTutor) {
+		User user = userRepository.findOneByusername(username);
+
+		Student student = studentRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+		Tutor tutor = tutorRepository.findOne(idTutor);
+		Post post = postRepository.findOne(idPost);
+		Suggestion oldSuggestion = suggestionRepository.findByTutor_idAndPost_idAndStudent_id(tutor.getId(), post.getId(), student.getId());
+		oldSuggestion.setStatus(1);
+		Suggestion suggestion = oldSuggestion;
+		suggestionRepository.save(suggestion);
 	}
 
 	@Override
-	public int totalItem() {
-		return (int) suggestionRepository.count();
+	public void reject(String username, long idPost, long idTutor) {
+		User user = userRepository.findOneByusername(username);
+
+		Student student = studentRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+		Tutor tutor = tutorRepository.findOne(idTutor);
+		Post post = postRepository.findOne(idPost);
+		Suggestion oldSuggestion = suggestionRepository.findByTutor_idAndPost_idAndStudent_id(tutor.getId(), post.getId(), student.getId());
+		oldSuggestion.setStatus(2);
+		Suggestion suggestion = oldSuggestion;
+		suggestionRepository.save(suggestion);
+
+	}
+
+	@Override
+	public List<Suggestion> findByIdStudent(long idStudent) {
+		return  suggestionRepository.findBystudent_id(idStudent);
+	}
+
+	@Override
+	public void delete(String username, long id) {
+		User user = userRepository.findOneByusername(username);
+		Student student = studentRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
+		suggestionRepository.delete(id);
 	}
 
 }

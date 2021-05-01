@@ -57,8 +57,6 @@ public class Tutor implements Serializable{
 	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
 	@JsonIgnoreProperties("tutor")
-	//@OneToOne(fetch = FetchType.LAZY)
-    //@MapsId
     private User user;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -198,15 +196,17 @@ public class Tutor implements Serializable{
 		this.invitations = invitations;
 	}
 	@OneToMany(mappedBy = "tutor")
-	private List<Suggestion> suggestions = new ArrayList<>();
+	@JsonIgnoreProperties("tutor")
+	private List<Suggestion> suggestion = new ArrayList<>();
 
-	public List<Suggestion> getSuggestions() {
-		return suggestions;
+	public List<Suggestion> getSuggestion() {
+		return suggestion;
 	}
 
-	public void setSuggestions(List<Suggestion> suggestions) {
-		this.suggestions = suggestions;
+	public void setSuggestion(List<Suggestion> suggestion) {
+		this.suggestion = suggestion;
 	}
+
 	
 
 	

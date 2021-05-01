@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,12 +31,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import doancnpm.controllers.output.PostOutput;
 import doancnpm.models.Post;
+import doancnpm.models.Student;
 import doancnpm.models.Tutor;
+import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.payload.response.PostOut;
 import doancnpm.payload.response.TutorOutput;
 import doancnpm.repository.PostRepository;
+import doancnpm.repository.StudentRepository;
+import doancnpm.repository.UserRepository;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
 
@@ -45,6 +50,10 @@ public class PostController {
 	@Autowired
 	PostRepository postRepository;
 
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	StudentRepository studentRepository;
 	@Autowired
 	private iPostService postService;
 
@@ -72,7 +81,49 @@ public class PostController {
 		}
 		return null;
 	}
+	
+	@GetMapping(value = "/api/post")
+	@PreAuthorize("hasRole('STUDENT')")
+	public Map<String, List<PostOut>> getPostByIdStudent(HttpServletRequest request) {
+		
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		User user = userRepository.findOneByusername(username);
+		Student student = studentRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
+		List<Post> post = postService.findByIdStudent(student.getId());
+		
+		List<PostOut> postOuts = new ArrayList<PostOut>();
+		for (int i = 0; i < post.size(); i++) {
+			String schedules = post.get(i).getSchedule();
+			PostOut postOut = new PostOut();
+			postOut.setId(post.get(i).getId());
+			postOut.setAddress(post.get(i).getAddress());
+			postOut.setGrade(post.get(i).getGrade());
+			postOut.setSubject(post.get(i).getSubject());
+			postOut.setDescription(post.get(i).getDescription());
+			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
+			postOut.setPrice(post.get(i).getPrice());
+			postOut.setTitle(post.get(i).getTitle());
+			postOut.setStudent(post.get(i).getStudent());
+			try {
+				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
+				System.out.println(schedule);
+				postOut.setSchedule(schedule);
+			} catch (IOException e) {
 
+				e.printStackTrace();
+			}
+			postOuts.add(postOut);
+		}
+		Map<String, List<PostOut>> response = new HashMap<String, List<PostOut>>();
+		response.put("post", postOuts);
+		return response;
+	}
+	
 	@PutMapping(value = "/api/post/{id}")
 	@PreAuthorize("hasRole('STUDENT')")
 	public String updatePost(HttpServletRequest request, @RequestBody PostRequest model, @PathVariable("id") long id) {
@@ -88,19 +139,20 @@ public class PostController {
 
 	@DeleteMapping(value = "/api/post/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
-	public void deletePost(@PathVariable("id") long id) {
-		postService.delete(id);
+	public void deletePost(HttpServletRequest request, @PathVariable("id") long id) {
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		postService.delete(username, id);
 		System.out.println("Delete is successed");
 	}
 
 	@GetMapping("/post/{id}")
 	public Map<String, PostOut> getPostById(@PathVariable("id") long id) {
 		Post post = postService.findPostById(id);
-//		if (post != null) {
-//			return new ResponseEntity<>(post, HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//		}
+
 		String schedules = post.getSchedule();
 		PostOut postOut = new PostOut();
 		postOut.setId(post.getId());

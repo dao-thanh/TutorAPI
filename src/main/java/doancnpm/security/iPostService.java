@@ -14,7 +14,7 @@ public interface iPostService {
 	void saveCreate(String username, PostRequest postDTO);
 	void saveUpdate(String username, PostRequest postDTO, long id);
 
-	void delete(long id);
+	void delete(String username, long id);
 
 	List<PostRequest> findAll(Pageable pageable);
 
@@ -23,5 +23,5 @@ public interface iPostService {
 	Post findPostById(Long id);
 	
 	List<Post> findAll();
-
+	List<Post> findByIdStudent(long idStudent);
 }

@@ -1,8 +1,11 @@
 package doancnpm.models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -11,13 +14,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -48,25 +55,18 @@ public class Post {
 	@Column(name = "address")
 	private String address;
 
-	@Column(name="schedule")
+	@Column(name = "schedule")
 	private String schedule;
 
 	@ManyToOne
 	@JoinColumn(name = "studentId")
+	@JsonIgnoreProperties("post")
 	private Student student;
 
-	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-	private Suggestion suggestion;
-	
-	
+	@OneToMany(mappedBy = "post")
+	@JsonIgnoreProperties("post")
+	private List<Suggestion> suggestion = new ArrayList<>();
 
-	public Suggestion getSuggestion() {
-		return suggestion;
-	}
-
-	public void setSuggestion(Suggestion suggestion) {
-		this.suggestion = suggestion;
-	}
 
 	public Student getStudent() {
 		return student;
@@ -75,6 +75,7 @@ public class Post {
 	public void setStudent(Student student) {
 		this.student = student;
 	}
+
 
 	public String getGrade() {
 		return grade;
@@ -127,7 +128,6 @@ public class Post {
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
-	
 
 	public String getSchedule() {
 		return schedule;

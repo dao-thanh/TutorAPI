@@ -2,17 +2,13 @@ package doancnpm.security;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-
-import doancnpm.payload.request.SuggestionRequest;
+import doancnpm.models.Suggestion;
 
 public interface iSuggestionService {
 
-	SuggestionRequest save(SuggestionRequest suggestionDTO);
-
-	void delete(long[] ids);
-
-	List<SuggestionRequest> findAll(Pageable pageable);
-
-	int totalItem();
+	void save(String username, Long idPost, Long idStudent);
+	void accept(String username, long idPost, long idTutor);
+	void reject(String username, long idPost, long idTutor);
+	void delete(String username, long id);
+	List<Suggestion> findByIdStudent(long idStudent);
 }

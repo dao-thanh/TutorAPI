@@ -36,7 +36,7 @@ public class PostService implements iPostService {
 		} else {
 			postEntity = postConverter.toEntity(postDTO);
 		}
-		User userEntity = userRepository.findOneByUsername(postDTO.getUsername());
+		User userEntity = userRepository.findOneByusername(postDTO.getUsername());
 		postEntity.setUser(userEntity);
 		postEntity = postRepository.save(postEntity);
 		return postConverter.toDTO(postEntity);

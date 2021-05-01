@@ -73,7 +73,8 @@ public class TutorController {
 		tutorOutput.setRating(tutorData.getRating());
 		tutorOutput.setDescription(tutorData.getDescription());
 		tutorOutput.setAddress(tutorData.getAddress());
-		tutorOutput.setUser(tutorData.getUser());
+		tutorOutput.setName(tutorData.getUser().getName());
+		tutorOutput.setPhonenumber(tutorData.getUser().getPhonenumber());
 		tutorOutput.setSubjects(tutorData.getSubjects());
 		tutorOutput.setGrades(tutorData.getGrades());
 
@@ -116,7 +117,8 @@ public class TutorController {
 			tutorOutput.setRating(tutors.get(i).getRating());
 			tutorOutput.setDescription(tutors.get(i).getDescription());
 			tutorOutput.setAddress(tutors.get(i).getAddress());
-			tutorOutput.setUser(tutors.get(i).getUser());
+			tutorOutput.setName(tutors.get(i).getUser().getName());
+			tutorOutput.setPhonenumber(tutors.get(i).getUser().getPhonenumber());
 			tutorOutput.setSubjects(tutors.get(i).getSubjects());
 			tutorOutput.setGrades(tutors.get(i).getGrades());
 
@@ -175,8 +177,8 @@ public class TutorController {
 //	}
 
 	@PutMapping(value = "/tutor")
-	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public String updateUser(HttpServletRequest request, @RequestBody AddTutorRequest model) {
+	@PreAuthorize("hasRole('TUTOR')")
+	public String updateTutor(HttpServletRequest request, @RequestBody AddTutorRequest model) {
 
 		String jwt = parseJwt(request);
 		String username = "";

@@ -35,10 +35,11 @@ public class User {
 	
 	private Long age;
 	
-	@Size(max = 50)
+	@Column(name = "name", nullable = true)
 	private String name;
 	
-	private int gender;
+	@Column(name = "gender", nullable = true)
+	private Long gender;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -88,14 +89,7 @@ public class User {
 		this.name = name;
 	}
 
-	
-	public int getGender() {
-		return gender;
-	}
 
-	public void setGender(int gender) {
-		this.gender = gender;
-	}
 
 	public Student getStudent() {
 		return student;
@@ -162,4 +156,13 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public Long getGender() {
+		return gender;
+	}
+
+	public void setGender(Long gender) {
+		this.gender = gender;
+	}
+	
 }

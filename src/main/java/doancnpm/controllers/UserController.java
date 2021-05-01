@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import doancnpm.models.User;
+import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.AddUserRequest;
+import doancnpm.payload.request.UserRequest;
 import doancnpm.security.IUserService;
+import doancnpm.security.jwt.JwtUtils;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -28,6 +34,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private JwtUtils jwtUtils;
 	
 	@GetMapping(value = "/user")
 	@PreAuthorize("hasRole('ADMIN')")
@@ -50,14 +59,17 @@ public class UserController {
 	    }
 	  }
 	
-	@PutMapping(value = "/user/{id}")
+	@PutMapping(value = "/user")
 	@PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
-	public String updateUser(@RequestBody AddUserRequest model, @PathVariable("id") long id) {
+	public String updateUser(HttpServletRequest request, @RequestBody UserRequest model) {
 		
-//	    Optional<User> userEdit = userService.findUserById(userId);  
-//	    userEdit.ifPresent(user -> model.addAttribute("user", user));  
-		model.setId(id);
-		userService.save(model);
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		
+		userService.save(username, model);;
 	    return "Update user is success";  
 	  }  
 	
@@ -66,5 +78,11 @@ public class UserController {
 	public void deleteUser(@RequestBody long[] ids) {
 		userService.delete(ids);
 	}
-	
+	private String parseJwt(HttpServletRequest request) {
+		String headerAuth = request.getHeader("Authorization");
+		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
+			return headerAuth.replace("Bearer ", "");
+		}
+		return null;
+	}
 }

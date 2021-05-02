@@ -3,8 +3,10 @@ package doancnpm.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.GsonJsonParser;
@@ -42,6 +44,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import doancnpm.models.Grade;
+import doancnpm.models.Subject;
 import doancnpm.models.Tutor;
 
 import doancnpm.payload.request.AddTutorRequest;
@@ -106,8 +110,19 @@ public class TutorController {
 		tutorOutput.setAddress(tutorData.getAddress());
 		tutorOutput.setName(tutorData.getUser().getName());
 		tutorOutput.setPhonenumber(tutorData.getUser().getPhonenumber());
-		tutorOutput.setSubjects(tutorData.getSubjects());
-		tutorOutput.setGrades(tutorData.getGrades());
+		Set<Grade> setGrades = tutorData.getGrades();
+		Set<String> grades = new HashSet<String>();
+		for(Grade grade : setGrades) {
+			grades.add(grade.getGradename());
+		}
+		tutorOutput.setGrades(grades);
+		
+		Set<Subject> setSubjects = tutorData.getSubjects();
+		Set<String> subjects = new HashSet<String>();
+		for(Subject subject : setSubjects ) {
+			subjects.add(subject.getSubjectname());
+		}
+		tutorOutput.setSubjects(subjects);
 
 		if (schedule != null) {
 			// tutorOutput.setSchedule(jsonObject);
@@ -150,9 +165,20 @@ public class TutorController {
 			tutorOutput.setAddress(tutors.get(i).getAddress());
 			tutorOutput.setName(tutors.get(i).getUser().getName());
 			tutorOutput.setPhonenumber(tutors.get(i).getUser().getPhonenumber());
-			tutorOutput.setSubjects(tutors.get(i).getSubjects());
-			tutorOutput.setGrades(tutors.get(i).getGrades());
-
+			Set<Grade> setGrades = tutors.get(i).getGrades();
+			Set<String> grades = new HashSet<String>();
+			for(Grade grade : setGrades) {
+				grades.add(grade.getGradename());
+			}
+			tutorOutput.setGrades(grades);
+			
+			Set<Subject> setSubjects = tutors.get(i).getSubjects();
+			Set<String> subjects = new HashSet<String>();
+			for(Subject subject : setSubjects ) {
+				subjects.add(subject.getSubjectname());
+			}
+			tutorOutput.setSubjects(subjects);
+			
 			if (schedule != null) {
 				// tutorOutput.setSchedule(jsonObject);
 				try {

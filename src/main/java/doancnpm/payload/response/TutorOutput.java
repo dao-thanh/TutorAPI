@@ -21,8 +21,8 @@ public class TutorOutput {
 	private String description;
 	private String address;
 	@JsonIgnoreProperties("tutors")
-	private Set<Subject> subjects;
-	private Set<Grade> grades;
+	private Set<String> subjects;
+	private Set<String> grades;
 
 	private Map<String,Boolean> schedules;
 	
@@ -34,12 +34,7 @@ public class TutorOutput {
 	}
 
 	
-	public Set<Grade> getGrades() {
-		return grades;
-	}
-	public void setGrades(Set<Grade> grades) {
-		this.grades = grades;
-	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -58,11 +53,6 @@ public class TutorOutput {
 	public String getAddress() {
 		return address;
 	}
-	
-	public Set<Subject> getSubjects() {
-		return subjects;
-	}
-
 	
 	public void setId(Long id) {
 		this.id = id;
@@ -83,8 +73,18 @@ public class TutorOutput {
 		this.address = address;
 	}
 	
-	public void setSubjects(Set<Subject> subjects) {
+	
+	public Set<String> getSubjects() {
+		return subjects;
+	}
+	public void setSubjects(Set<String> subjects) {
 		this.subjects = subjects;
+	}
+	public Set<String> getGrades() {
+		return grades;
+	}
+	public void setGrades(Set<String> grades) {
+		this.grades = grades;
 	}
 	public String getName() {
 		return name;

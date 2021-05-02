@@ -3,8 +3,10 @@ package doancnpm.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import doancnpm.controllers.output.PostOutput;
 import doancnpm.models.Post;
 import doancnpm.models.Student;
+import doancnpm.models.Subject;
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
@@ -101,14 +104,20 @@ public class PostController {
 			String schedules = post.get(i).getSchedule();
 			PostOut postOut = new PostOut();
 			postOut.setId(post.get(i).getId());
+			postOut.setIdStudent(post.get(i).getStudent().getId());
 			postOut.setAddress(post.get(i).getAddress());
-			postOut.setGrade(post.get(i).getGrade());
-			postOut.setSubject(post.get(i).getSubject());
+			postOut.setGrade(post.get(i).getGrade().getGradename());
+			Set<Subject> setSubjects = post.get(i).getSubjects();
+			Set<String> subjects = new HashSet<String>();
+			for(Subject subject : setSubjects ) {
+				subjects.add(subject.getSubjectname());
+			}
+			postOut.setSubjects(subjects);
 			postOut.setDescription(post.get(i).getDescription());
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
-			postOut.setStudent(post.get(i).getStudent());
+			
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
@@ -152,18 +161,23 @@ public class PostController {
 	@GetMapping("/post/{id}")
 	public Map<String, PostOut> getPostById(@PathVariable("id") long id) {
 		Post post = postService.findPostById(id);
-
 		String schedules = post.getSchedule();
 		PostOut postOut = new PostOut();
 		postOut.setId(post.getId());
+		postOut.setIdStudent(post.getStudent().getId());
 		postOut.setAddress(post.getAddress());
-		postOut.setGrade(post.getGrade());
-		postOut.setSubject(post.getSubject());
+		postOut.setGrade(post.getGrade().getGradename());
+		Set<Subject> setSubjects = post.getSubjects();
+		Set<String> subjects = new HashSet<String>();
+		for(Subject subject : setSubjects ) {
+			subjects.add(subject.getSubjectname());
+		}
+		postOut.setSubjects(subjects);
 		postOut.setDescription(post.getDescription());
 		postOut.setPhoneNumber(post.getPhoneNumber());
 		postOut.setPrice(post.getPrice());
 		postOut.setTitle(post.getTitle());
-		postOut.setStudent(post.getStudent());
+		
 		try {
 			Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 			System.out.println(schedule);
@@ -186,13 +200,13 @@ public class PostController {
 			PostOut postOut = new PostOut();
 			postOut.setId(post.get(i).getId());
 			postOut.setAddress(post.get(i).getAddress());
-			postOut.setGrade(post.get(i).getGrade());
-			postOut.setSubject(post.get(i).getSubject());
+//			postOut.setGrade(post.get(i).getGrade());
+//			postOut.setSubject(post.get(i).getSubject());
 			postOut.setDescription(post.get(i).getDescription());
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
-			postOut.setStudent(post.get(i).getStudent());
+		
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
@@ -208,50 +222,50 @@ public class PostController {
 		return response;
 	}
 
-	@GetMapping("/post/apisearch")
-	public ResponseEntity<Map<String, Object>> getAllTutors(@RequestParam(required = false) String subject,
-			String grade, String address, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "3") int size) {
-		try {
-			List<Post> posts = new ArrayList<Post>();
-			Pageable paging = new PageRequest(page, size);
-
-			Page<Post> pageTuts;
-			if (subject == null && grade == null && address == null)
-				pageTuts = postRepository.findAll(paging);
-
-			else if (subject != null && grade == null && address == null)
-				pageTuts = postRepository.findBySubject(subject, paging);
-
-			else if (subject == null && grade != null && address == null)
-				pageTuts = postRepository.findByGrade(grade, paging);
-
-			else if (subject == null && grade == null && address != null)
-				pageTuts = postRepository.findByAddress(address, paging);
-
-			else if (subject == null && grade != null && address != null)
-				pageTuts = postRepository.findByGradeInAndAddressIn(grade, address, paging);
-
-			else if (subject != null && grade == null && address != null)
-				pageTuts = postRepository.findBySubjectInAndAddressIn(subject, address, paging);
-
-			else if (subject != null && grade != null && address == null)
-				pageTuts = postRepository.findByGradeInAndSubjectIn(grade, subject, paging);
-			else {
-				pageTuts = postRepository.findByGradeInAndSubjectInAndAddress(grade, subject, address, paging);
-			}
-			posts = pageTuts.getContent();
-
-			Map<String, Object> response = new HashMap<>();
-			response.put("posts", posts);
-			response.put("currentPage", pageTuts.getNumber());
-			response.put("totalItems", pageTuts.getTotalElements());
-			response.put("totalPages", pageTuts.getTotalPages());
-
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+//	@GetMapping("/post/apisearch")
+//	public ResponseEntity<Map<String, Object>> getAllTutors(@RequestParam(required = false) String subject,
+//			String grade, String address, @RequestParam(defaultValue = "0") int page,
+//			@RequestParam(defaultValue = "3") int size) {
+//		try {
+//			List<Post> posts = new ArrayList<Post>();
+//			Pageable paging = new PageRequest(page, size);
+//
+//			Page<Post> pageTuts;
+//			if (subject == null && grade == null && address == null)
+//				pageTuts = postRepository.findAll(paging);
+//
+//			else if (subject != null && grade == null && address == null)
+//				pageTuts = postRepository.findBySubject(subject, paging);
+//
+//			else if (subject == null && grade != null && address == null)
+//				pageTuts = postRepository.findByGrade(grade, paging);
+//
+//			else if (subject == null && grade == null && address != null)
+//				pageTuts = postRepository.findByAddress(address, paging);
+//
+//			else if (subject == null && grade != null && address != null)
+//				pageTuts = postRepository.findByGradeInAndAddressIn(grade, address, paging);
+//
+//			else if (subject != null && grade == null && address != null)
+//				pageTuts = postRepository.findBySubjectInAndAddressIn(subject, address, paging);
+//
+//			else if (subject != null && grade != null && address == null)
+//				pageTuts = postRepository.findByGradeInAndSubjectIn(grade, subject, paging);
+//			else {
+//				pageTuts = postRepository.findByGradeInAndSubjectInAndAddress(grade, subject, address, paging);
+//			}
+//			posts = pageTuts.getContent();
+//
+//			Map<String, Object> response = new HashMap<>();
+//			response.put("posts", posts);
+//			response.put("currentPage", pageTuts.getNumber());
+//			response.put("totalItems", pageTuts.getTotalElements());
+//			response.put("totalPages", pageTuts.getTotalPages());
+//
+//			return new ResponseEntity<>(response, HttpStatus.OK);
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 
 }

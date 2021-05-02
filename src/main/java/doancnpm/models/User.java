@@ -1,12 +1,21 @@
 package doancnpm.models;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.*;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -47,7 +56,7 @@ public class User {
 
 //	@OneToMany(mappedBy = "user")
 //	@JsonIgnoreProperties("user")
-//	private List<Comment> messages = new ArrayList<>();
+//	private List<Message> messages = new ArrayList<>();
 
 	public User() {
 	}
@@ -107,7 +116,13 @@ public class User {
 		this.phonenumber = phonenumber;
 	}
 
-
+//	public List<Message> getMessages() {
+//		return messages;
+//	}
+//
+//	public void setMessages(List<Message> messages) {
+//		this.messages = messages;
+//	}
 
 	public Tutor getTutor() {
 		return tutor;

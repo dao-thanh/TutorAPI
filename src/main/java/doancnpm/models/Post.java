@@ -1,20 +1,30 @@
 package doancnpm.models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -27,8 +37,8 @@ public class Post {
 	@Column(name = "title")
 	private String title;
 
-	@Column(name = "content")
-	private String content;
+	@Column(name = "description")
+	private String description;
 
 	@Column(name = "grade")
 	private String grade;
@@ -36,17 +46,36 @@ public class Post {
 	@Column(name = "subject")
 	private String subject;
 
+	@Column(name = "price")
+	private String price;
+
+	@Column(name = "phoneNumber")
+	private String phoneNumber;
+
+	@Column(name = "address")
+	private String address;
+
+	@Column(name = "schedule")
+	private String schedule;
+
 	@ManyToOne
-	@JoinColumn(name = "userId")
-	private User user;
+	@JoinColumn(name = "studentId")
+	@JsonIgnoreProperties("post")
+	private Student student;
 
-	public User getUser() {
-		return user;
+	@OneToMany(mappedBy = "post")
+	@JsonIgnoreProperties("post")
+	private List<Suggestion> suggestion = new ArrayList<>();
+
+
+	public Student getStudent() {
+		return student;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setStudent(Student student) {
+		this.student = student;
 	}
+
 
 	public String getGrade() {
 		return grade;
@@ -84,14 +113,6 @@ public class Post {
 		this.title = title;
 	}
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -107,22 +128,67 @@ public class Post {
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
-	
+
+	public String getSchedule() {
+		return schedule;
+	}
+
+	public void setSchedule(String schedule) {
+		this.schedule = schedule;
+	}
+
 	public Post() {
-		
+
 	}
-	
-	public Post(String title, String content, String grade, String subject) {
-		this.title=title;
-		this.content=content;
-		this.grade=grade;
-		this.subject=subject;
+
+	public String getDescription() {
+		return description;
 	}
-	
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	@Override
 	public String toString() {
-		return "Tutor [id=" + id + ", title=" + title + ", content=" + content + ", grade=" + grade + ", subject="
-				+ subject + "]";
+		return "Tutor [id=" + id + ", title=" + title + ", description=" + description + ", grade=" + grade
+				+ ", subject=" + subject + ", price=" + price + ",phone=" + phoneNumber + ",address=" + address + "]";
+	}
+
+	public Post(String title, String description, String grade, String subject, String price, String phoneNumber,
+			String address) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.grade = grade;
+		this.subject = subject;
+		this.price = price;
+		this.phoneNumber = phoneNumber;
+		this.address = address;
 	}
 
 }

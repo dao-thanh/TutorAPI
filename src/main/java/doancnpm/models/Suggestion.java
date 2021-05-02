@@ -1,37 +1,29 @@
 package doancnpm.models;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "invitations")
-public class Invitation{
-	
+@Table(name = "suggestion")
+public class Suggestion {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@ManyToOne
-	@JoinColumn(name="student_id")
-	@JsonIgnoreProperties("invitation")
-	private Student student;
-	
-	@ManyToOne
-	@JoinColumn(name="tutor_id")
-	@JsonIgnoreProperties("invitation")
-	private Tutor tutor;
 	
 	@Column(name = "status")
 	private int status;
@@ -45,12 +37,44 @@ public class Invitation{
 	}
 
 	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+
+	@ManyToOne
+	@JoinColumn(name = "tutor_id")
+	@JsonIgnoreProperties("suggestion")
+	private Tutor tutor;
+	
+	@ManyToOne
+	@JoinColumn(name = "post_id")
+	@JsonIgnoreProperties("suggestion")
+	private Post post;
+	
+	@ManyToOne
+	@JoinColumn(name="student_id")
+	@JsonIgnoreProperties("suggestion")
+	private Student student;
+
 	public Student getStudent() {
 		return student;
 	}
 
 	public void setStudent(Student student) {
 		this.student = student;
+	}
+
+	public Post getPost() {
+		return post;
+	}
+
+	public void setPost(Post post) {
+		this.post = post;
 	}
 
 	public Tutor getTutor() {
@@ -60,13 +84,8 @@ public class Invitation{
 	public void setTutor(Tutor tutor) {
 		this.tutor = tutor;
 	}
+	
+	
 
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}	
 	
 }

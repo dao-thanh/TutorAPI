@@ -6,6 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.GsonJsonParser;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +39,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import doancnpm.models.Tutor;
+
+import doancnpm.payload.request.AddTutorRequest;
+import doancnpm.security.ITutorService;
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddTutorRequest;
@@ -50,7 +64,24 @@ import doancnpm.security.jwt.JwtUtils;
 public class TutorController {
 	@Autowired
 	private ITutorService tutorService;
+	
+	public ObjectMapper getObjectMapper() {
+	    ObjectMapper mapper = new ObjectMapper();
+	    mapper.addMixIn(Object.class, IgnoreHibernatePropertiesInJackson.class);
+	    return mapper;
+	}
 
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private abstract class IgnoreHibernatePropertiesInJackson{ }
+	
+//	@GetMapping(value = "/tutor")
+//	public Map<String,List<Tutor>> all(){
+//		System.out.println("ok");
+//		List<Tutor> tutors = tutorService.findAll();
+////		System.out.println(tutors.get(0).getSubject().getSubjectname()+"Thanh");
+//		Map<String,List<Tutor>> response=new HashMap<String, List<Tutor>>();
+//		response.put("tutors", tutors);
+//	}
 	@Autowired
 	private JwtUtils jwtUtils;
 
@@ -184,13 +215,7 @@ public class TutorController {
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
-		}
-//		User user = userRepository.findByUsername(username)
-//				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username"));
-//
-//		
-//        Tutor tutor = tutorRepository.findByuser_id(user.getId())
-//				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
+		}	
 		tutorService.save(username, model);
 		String message = "Update tutor is success !\n";
 		return message;

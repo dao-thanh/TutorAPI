@@ -37,6 +37,9 @@ public class Student {
 	
 	
 	
+	@OneToMany(mappedBy = "student")
+	@JsonIgnoreProperties("student")
+	private List<Post> post = new ArrayList<>();
 	
 	public List<Comment> getComments() {
 		return comments;
@@ -44,6 +47,25 @@ public class Student {
 
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}	
+	@OneToMany(mappedBy = "student")
+	@JsonIgnoreProperties("student")
+	private List<Suggestion> suggestion = new ArrayList<>();
+
+	public List<Suggestion> getSuggestion() {
+		return suggestion;
+	}
+
+	public void setSuggestion(List<Suggestion> suggestion) {
+		this.suggestion = suggestion;
+	}
+
+	public List<Post> getPost() {
+		return post;
+	}
+
+	public void setPost(List<Post> post) {
+		this.post = post;
 	}
 
 	public List<Invitation> getInvitations() {

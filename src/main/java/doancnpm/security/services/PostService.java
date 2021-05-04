@@ -19,9 +19,7 @@ import doancnpm.models.Grade;
 import doancnpm.models.Post;
 import doancnpm.models.Student;
 import doancnpm.models.Subject;
-import doancnpm.models.Tutor;
 import doancnpm.models.User;
-import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.repository.GradeRepository;
 import doancnpm.repository.PostRepository;
@@ -44,55 +42,64 @@ public class PostService implements iPostService {
 
 	@Autowired
 	private PostConverter postConverter;
-
+	
 	@Autowired
 	private GradeRepository gradeRepository;
 
 	@Autowired
 	private SubjectRepository subjectRepository;
-
-//	@Override
-//	public PostRequest save(PostRequest postDTO) {
-//		Post postEntity = new Post();
-//		if (postDTO.getId() != null) {
-//			Post oldPostEntity = postRepository.findOne(postDTO.getId());
-//			postEntity = postConverter.toEntity(postDTO, oldPostEntity);
-//		} else {
-//			postEntity = postConverter.toEntity(postDTO);
-//		}
-//		// User userEntity = userRepository.findOneByUsername(postDTO.getUsername());
-//		// postEntity.setUser(userEntity);
-//		Student studentEntity = studentRepository.findOneById(postDTO.getStudentID());
-//		postEntity.setStudent(studentEntity);
-//		Map<String, Boolean> schedule = postDTO.getSchedule();
-//		String jsonResp = "";
-//		ObjectMapper mapperObj = new ObjectMapper();
-//		try {
-//			jsonResp = mapperObj.writeValueAsString(schedule);
-//			System.out.println(jsonResp);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		postEntity.setSchedule(jsonResp);
-//		postEntity = postRepository.save(postEntity);
-//		return postConverter.toDTO(postEntity);
-//	}
-
+	
 	@Override
 	public void saveCreate(String username, PostRequest postDTO) {
+		Set<String> strSubject = postDTO.getSubjects();
+		Set<Subject> subjects = new HashSet<>();
+		strSubject.forEach(subject -> {
+			switch (subject) {
+			case "Toán":
+				Subject toan = subjectRepository.findBysubjectname("Toán")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
 
+				subjects.add(toan);
+				break;
+			case "Tiếng Anh":
+				Subject tienganh = subjectRepository.findBysubjectname("Tiếng Anh")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				subjects.add(tienganh);
+				break;
+			case "Hóa":
+				Subject hoa = subjectRepository.findBysubjectname("Hóa")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(hoa);
+				break;
+		
+			case "Lý":
+			Subject ly = subjectRepository.findBysubjectname("Lý")
+					.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+			subjects.add(ly);
+			break;
+			case "Ngữ Văn":
+				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(nguvan);
+				break;
+			case "Lịch Sử":
+				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(lichsu);
+				break;	
+			}
+		});
 		User user = userRepository.findOneByusername(username);
 
-		// Student student = new Student();
 		Student oldStudent = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
 
 		Map<String, Boolean> schedule = postDTO.getSchedule();
 		Post postEntity = new Post();
-		/*
-		 * Post oldPost = postRepository.findByStudentId(oldStudent.getId())
-		 * .orElseThrow(() -> new UsernameNotFoundException("Post Not Found"));
-		 */
 
 		postEntity = postConverter.toEntity(postDTO);
 		postEntity.setStudent(oldStudent);
@@ -102,38 +109,83 @@ public class PostService implements iPostService {
 			jsonResp = mapperObj.writeValueAsString(schedule);
 			System.out.println(jsonResp);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 
 		}
-
+		
+		Grade grade = gradeRepository.findBygradename(postDTO.getGrade())
+				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+		
+		
 		postEntity.setSchedule(jsonResp);
-//		postEntity.setStudent(user);
-//		postEntity = tutorRepository.save(tutor);
+		postEntity.setGrade(grade);
+		postEntity.setSubjects(subjects);
 		postEntity = postRepository.save(postEntity);
 		postDTO = postConverter.toDTO(postEntity);
 	}
 
 	@Override
 	public void saveUpdate(String username, PostRequest postDTO, long id) {
+		Set<String> strSubject = postDTO.getSubjects();
+		Set<Subject> subjects = new HashSet<>();
+		strSubject.forEach(subject -> {
+			switch (subject) {
+			case "Toán":
+				Subject toan = subjectRepository.findBysubjectname("Toán")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
 
+				subjects.add(toan);
+				break;
+			case "Tiếng anh":
+				Subject tienganh = subjectRepository.findBysubjectname("Tiếng anh")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				subjects.add(tienganh);
+				break;
+			case "Hóa":
+				Subject hoa = subjectRepository.findBysubjectname("Hóa")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(hoa);
+				break;
+		
+			case "Lý":
+			Subject ly = subjectRepository.findBysubjectname("Lý")
+					.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+			subjects.add(ly);
+			break;
+			case "Ngữ Văn":
+				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(nguvan);
+				break;
+			case "Lịch Sử":
+				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử")
+						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+
+				subjects.add(lichsu);
+				break;	
+			}
+		});
+		
 		User user = userRepository.findOneByusername(username);
-
-		// Student student = new Student();
 		Student student = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
 
 		Map<String, Boolean> schedule = postDTO.getSchedule();
-//		Tutor tutor = new Tutor();
-//		Tutor oldTutor = tutorRepository.findByuser_id(user.getId())
-//				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
-//		
-//		tutor = tutorConverter.toTutor(addTutorRequest, oldTutor);
+
 		Post postEntity = new Post();
 		
 		Post post = postRepository.findOne(id);
-		
+
 		postEntity = postConverter.toEntity(postDTO, post);
+		
+		Grade grade = gradeRepository.findBygradename(postDTO.getGrade())
+				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+		
+		postEntity.setGrade(grade);
+		postEntity.setSubjects(subjects);
 		postEntity.setStudent(student);
 		String jsonResp = "";
 		ObjectMapper mapperObj = new ObjectMapper();
@@ -147,18 +199,17 @@ public class PostService implements iPostService {
 		}
 
 		postEntity.setSchedule(jsonResp);
-//		postEntity.setStudent(user);
-//		postEntity = tutorRepository.save(tutor);
+
 		postEntity = postRepository.save(postEntity);
 		postDTO = postConverter.toDTO(postEntity);
 	}
 
 	@Override
-	public void delete(long[] ids) {
-		for (long item : ids) {
-			postRepository.delete(item);
-		}
-
+	public void delete(String username, long id) {
+		User user = userRepository.findOneByusername(username);
+		Student student = studentRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
+		postRepository.delete(id);
 	}
 
 	@Override
@@ -183,5 +234,17 @@ public class PostService implements iPostService {
 
 		return postRepository.findOne(id);
 	}
+
+	@Override
+	public List<Post> findAll() {
+		// TODO Auto-generated method stub
+		return postRepository.findAll();
+	}
+
+	@Override
+	public List<Post> findByIdStudent(long idStudent) {
+		return  postRepository.findByStudent_id(idStudent);
+	}
+
 
 }

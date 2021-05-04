@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,8 +57,6 @@ public class Tutor implements Serializable{
 	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
 	@JsonIgnoreProperties("tutor")
-	//@OneToOne(fetch = FetchType.LAZY)
-    //@MapsId
     private User user;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -77,7 +78,7 @@ public class Tutor implements Serializable{
 	
 	@OneToMany(mappedBy = "tutor")
 	@JsonIgnoreProperties("tutor")
-	private List<Message> messages = new ArrayList<>();
+	private List<Comment> comments = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "tutor")
 	@JsonIgnoreProperties("tutor")
@@ -93,15 +94,16 @@ public class Tutor implements Serializable{
 
 
 
+	
 	@Column(name="schedule")
 	private String schedule;
-	
-	public List<Message> getMessages() {
-		return messages;
+
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	public String getRating() {
@@ -138,7 +140,6 @@ public class Tutor implements Serializable{
 		this.avatar = avatar;
 	}
 
-
 	public String getDescription() {
 		return description;
 	}
@@ -146,7 +147,6 @@ public class Tutor implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 
 	public String getAddress() {
 		return address;
@@ -197,15 +197,17 @@ public class Tutor implements Serializable{
 		this.invitations = invitations;
 	}
 	@OneToMany(mappedBy = "tutor")
-	private List<Suggestion> suggestions = new ArrayList<>();
+	@JsonIgnoreProperties("tutor")
+	private List<Suggestion> suggestion = new ArrayList<>();
 
-	public List<Suggestion> getSuggestions() {
-		return suggestions;
+	public List<Suggestion> getSuggestion() {
+		return suggestion;
 	}
 
-	public void setSuggestions(List<Suggestion> suggestions) {
-		this.suggestions = suggestions;
+	public void setSuggestion(List<Suggestion> suggestion) {
+		this.suggestion = suggestion;
 	}
+
 	
 
 	

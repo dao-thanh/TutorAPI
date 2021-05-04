@@ -1,8 +1,12 @@
 package doancnpm.models;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -11,18 +15,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "post")
-public class Post {
+public class Post  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -33,12 +41,44 @@ public class Post {
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "grade")
-	private String grade;
+	
+	@ManyToOne
+	@JoinColumn(name="grade_id")
+	@JsonIgnoreProperties("posts")
+	private Grade grade;
 
-	@Column(name = "subject")
-	private String subject;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "post_subject", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
+	@JsonIgnoreProperties("posts")
+	private Set<Subject> subjects = new HashSet<>();
+	
+	public Grade getGrade() {
+		return grade;
+	}
 
+	public void setGrade(Grade grade) {
+		this.grade = grade;
+	}
+
+	public Set<Subject> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(Set<Subject> subjects) {
+		this.subjects = subjects;
+	}
+
+	public List<Suggestion> getSuggestion() {
+		return suggestion;
+	}
+
+	public void setSuggestion(List<Suggestion> suggestion) {
+		this.suggestion = suggestion;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	@Column(name = "price")
 	private String price;
 
@@ -48,25 +88,18 @@ public class Post {
 	@Column(name = "address")
 	private String address;
 
-	@Column(name="schedule")
+	@Column(name = "schedule")
 	private String schedule;
 
 	@ManyToOne
 	@JoinColumn(name = "studentId")
+	@JsonIgnoreProperties("post")
 	private Student student;
 
-	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-	private Suggestion suggestion;
-	
-	
+	@OneToMany(mappedBy = "post")
+	@JsonIgnoreProperties("post")
+	private List<Suggestion> suggestion = new ArrayList<>();
 
-	public Suggestion getSuggestion() {
-		return suggestion;
-	}
-
-	public void setSuggestion(Suggestion suggestion) {
-		this.suggestion = suggestion;
-	}
 
 	public Student getStudent() {
 		return student;
@@ -74,22 +107,6 @@ public class Post {
 
 	public void setStudent(Student student) {
 		this.student = student;
-	}
-
-	public String getGrade() {
-		return grade;
-	}
-
-	public void setGrade(String grade) {
-		this.grade = grade;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
 	}
 
 	@Column(name = "createdDate")
@@ -127,7 +144,6 @@ public class Post {
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
-	
 
 	public String getSchedule() {
 		return schedule;
@@ -176,19 +192,19 @@ public class Post {
 	@Override
 	public String toString() {
 		return "Tutor [id=" + id + ", title=" + title + ", description=" + description + ", grade=" + grade
-				+ ", subject=" + subject + ", price=" + price + ",phone=" + phoneNumber + ",address=" + address + "]";
+				+ ", price=" + price + ",phone=" + phoneNumber + ",address=" + address + "]";
 	}
 
-	public Post(String title, String description, String grade, String subject, String price, String phoneNumber,
-			String address) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.grade = grade;
-		this.subject = subject;
-		this.price = price;
-		this.phoneNumber = phoneNumber;
-		this.address = address;
-	}
+//	public Post(String title, String description, String grade, String subject, String price, String phoneNumber,
+//			String address) {
+//		super();
+//		this.title = title;
+//		this.description = description;
+//		this.grade = grade;
+//		this.subject = subject;
+//		this.price = price;
+//		this.phoneNumber = phoneNumber;
+//		this.address = address;
+//	}
 
 }

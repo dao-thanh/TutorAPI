@@ -1,12 +1,21 @@
 package doancnpm.models;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.*;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -32,14 +41,22 @@ public class User {
 
 	@Size(max = 120)
 	private String password;
+	
+	private Long age;
+	
+	@Column(name = "name", nullable = true)
+	private String name;
+	
+	@Column(name = "gender", nullable = true)
+	private Long gender;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	@OneToMany(mappedBy = "user")
-	@JsonIgnoreProperties("user")
-	private List<Message> messages = new ArrayList<>();
+//	@OneToMany(mappedBy = "user")
+//	@JsonIgnoreProperties("user")
+//	private List<Message> messages = new ArrayList<>();
 
 	public User() {
 	}
@@ -62,6 +79,26 @@ public class User {
 	private Student student;
 	
 
+	
+	
+	public Long getAge() {
+		return age;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	
+	public void setAge(Long age) {
+		this.age = age;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
 
 	public Student getStudent() {
 		return student;
@@ -79,13 +116,13 @@ public class User {
 		this.phonenumber = phonenumber;
 	}
 
-	public List<Message> getMessages() {
-		return messages;
-	}
-
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
-	}
+//	public List<Message> getMessages() {
+//		return messages;
+//	}
+//
+//	public void setMessages(List<Message> messages) {
+//		this.messages = messages;
+//	}
 
 	public Tutor getTutor() {
 		return tutor;
@@ -134,4 +171,13 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public Long getGender() {
+		return gender;
+	}
+
+	public void setGender(Long gender) {
+		this.gender = gender;
+	}
+	
 }

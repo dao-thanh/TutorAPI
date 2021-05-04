@@ -2,27 +2,28 @@ package doancnpm.payload.request;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 public class PostRequest extends BaseRequest<PostRequest> {
 
 	private String student;
 	private String title;
 	private String description;
-	private String subject;
+	private Set<String> subjects;
 	private String grade;
 	private String price;
 	private String phoneNumber;
 	private String address;
-	//private Long studentID;
+	private Long studentID;
 	private Map<String, Boolean> schedule;
 
-//	public Long getStudentID() {
-//		return studentID;
-//	}
-//
-//	public void setStudentID(Long studentID) {
-//		this.studentID = studentID;
-//	}
+	public Long getStudentID() {
+		return studentID;
+	}
+
+	public void setStudentID(Long studentID) {
+		this.studentID = studentID;
+	}
 
 	public Map<String, Boolean> getSchedule() {
 		return schedule;
@@ -40,12 +41,14 @@ public class PostRequest extends BaseRequest<PostRequest> {
 		this.student = student;
 	}
 
-	public String getSubject() {
-		return subject;
+	
+
+	public Set<String> getSubjects() {
+		return subjects;
 	}
 
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setSubjects(Set<String> subjects) {
+		this.subjects = subjects;
 	}
 
 	public String getGrade() {

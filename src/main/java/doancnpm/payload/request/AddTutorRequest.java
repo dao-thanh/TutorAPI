@@ -1,25 +1,34 @@
 package doancnpm.payload.request;
 
+
+import java.util.Set;
+
+
 import java.util.Map;
 import java.util.Set;
 
 public class AddTutorRequest {
 	private Long id;
 	private String qualification;
+	private String avatar;
 	private String description;
 	private Set<String> subjects;
 	private Set<String> grade;
 	private String address;
+	private Set<String> teachingDate;
+	private String username;
 	private String rating;
 	private Map<String,Boolean> schedule;
 	
 	
-//	public String getSchedule() {
-//		return schedule;
-//	}
-//	public void setSchedule(String schedule) {
-//		this.schedule = schedule;
-//	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+
 	
 	public Long getId() {
 		return id;
@@ -33,6 +42,7 @@ public class AddTutorRequest {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
 	public String getRating() {
 		return rating;
 	}
@@ -75,5 +85,4 @@ public class AddTutorRequest {
 	public void setSubjects(Set<String> subjects) {
 		this.subjects = subjects;
 	}
-
 }

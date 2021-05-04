@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
@@ -29,15 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import doancnpm.controllers.output.PostOutput;
 import doancnpm.models.Post;
 import doancnpm.models.Student;
-import doancnpm.models.Tutor;
 import doancnpm.models.User;
-import doancnpm.payload.request.AddTutorRequest;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.payload.response.PostOut;
-import doancnpm.payload.response.TutorOutput;
 import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.UserRepository;
@@ -81,11 +75,11 @@ public class PostController {
 		}
 		return null;
 	}
-	
+
 	@GetMapping(value = "/api/post")
 	@PreAuthorize("hasRole('STUDENT')")
 	public Map<String, List<PostOut>> getPostByIdStudent(HttpServletRequest request) {
-		
+
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -95,7 +89,7 @@ public class PostController {
 		Student student = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
 		List<Post> post = postService.findByIdStudent(student.getId());
-		
+
 		List<PostOut> postOuts = new ArrayList<PostOut>();
 		for (int i = 0; i < post.size(); i++) {
 			String schedules = post.get(i).getSchedule();
@@ -123,7 +117,7 @@ public class PostController {
 		response.put("post", postOuts);
 		return response;
 	}
-	
+
 	@PutMapping(value = "/api/post/{id}")
 	@PreAuthorize("hasRole('STUDENT')")
 	public String updatePost(HttpServletRequest request, @RequestBody PostRequest model, @PathVariable("id") long id) {
@@ -172,7 +166,7 @@ public class PostController {
 
 			e.printStackTrace();
 		}
-		Map<String,PostOut> response = new HashMap<String, PostOut>();
+		Map<String, PostOut> response = new HashMap<String, PostOut>();
 		response.put("post", postOut);
 		return response;
 	}
@@ -209,49 +203,63 @@ public class PostController {
 	}
 
 	@GetMapping("/post/apisearch")
-	public ResponseEntity<Map<String, Object>> getAllTutors(@RequestParam(required = false) String subject,
-			String grade, String address, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "3") int size) {
-		try {
-			List<Post> posts = new ArrayList<Post>();
-			Pageable paging = new PageRequest(page, size);
+	public Map<String, List<PostOut>> getAllTutors(@RequestParam(required = false) String subject, String grade,
+			String address, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+		List<Post> posts = new ArrayList<Post>();
+		Pageable paging = new PageRequest(page, size);
 
-			Page<Post> pageTuts;
-			if (subject == null && grade == null && address == null)
-				pageTuts = postRepository.findAll(paging);
+		Page<Post> pageTuts;
+		if (subject == null && grade == null && address == null)
+			pageTuts = postRepository.findAll(paging);
 
-			else if (subject != null && grade == null && address == null)
-				pageTuts = postRepository.findBySubject(subject, paging);
+		else if (subject != null && grade == null && address == null)
+			pageTuts = postRepository.findBySubject(subject, paging);
 
-			else if (subject == null && grade != null && address == null)
-				pageTuts = postRepository.findByGrade(grade, paging);
+		else if (subject == null && grade != null && address == null)
+			pageTuts = postRepository.findByGrade(grade, paging);
 
-			else if (subject == null && grade == null && address != null)
-				pageTuts = postRepository.findByAddress(address, paging);
+		else if (subject == null && grade == null && address != null)
+			pageTuts = postRepository.findByAddress(address, paging);
 
-			else if (subject == null && grade != null && address != null)
-				pageTuts = postRepository.findByGradeInAndAddressIn(grade, address, paging);
+		else if (subject == null && grade != null && address != null)
+			pageTuts = postRepository.findByGradeInAndAddressIn(grade, address, paging);
 
-			else if (subject != null && grade == null && address != null)
-				pageTuts = postRepository.findBySubjectInAndAddressIn(subject, address, paging);
+		else if (subject != null && grade == null && address != null)
+			pageTuts = postRepository.findBySubjectInAndAddressIn(subject, address, paging);
 
-			else if (subject != null && grade != null && address == null)
-				pageTuts = postRepository.findByGradeInAndSubjectIn(grade, subject, paging);
-			else {
-				pageTuts = postRepository.findByGradeInAndSubjectInAndAddress(grade, subject, address, paging);
-			}
-			posts = pageTuts.getContent();
-
-			Map<String, Object> response = new HashMap<>();
-			response.put("posts", posts);
-			response.put("currentPage", pageTuts.getNumber());
-			response.put("totalItems", pageTuts.getTotalElements());
-			response.put("totalPages", pageTuts.getTotalPages());
-
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		else if (subject != null && grade != null && address == null)
+			pageTuts = postRepository.findByGradeInAndSubjectIn(grade, subject, paging);
+		else {
+			pageTuts = postRepository.findByGradeInAndSubjectInAndAddress(grade, subject, address, paging);
 		}
+		posts = pageTuts.getContent();
+		List<PostOut> postOuts = new ArrayList<PostOut>();
+		for (int i = 0; i < posts.size(); i++) {
+			String schedules = posts.get(i).getSchedule();
+			PostOut postOut = new PostOut();
+			postOut.setId(posts.get(i).getId());
+			postOut.setAddress(posts.get(i).getAddress());
+			postOut.setGrade(posts.get(i).getGrade());
+			postOut.setSubject(posts.get(i).getSubject());
+			postOut.setDescription(posts.get(i).getDescription());
+			postOut.setPhoneNumber(posts.get(i).getPhoneNumber());
+			postOut.setPrice(posts.get(i).getPrice());
+			postOut.setTitle(posts.get(i).getTitle());
+			postOut.setIdStudent(posts.get(i).getStudent().getId());
+			try {
+				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
+				System.out.println(schedule);
+				postOut.setSchedule(schedule);
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+			postOuts.add(postOut);
+		}
+		Map<String, List<PostOut>> response = new HashMap<String, List<PostOut>>();
+		response.put("post", postOuts);
+		return response;
+
 	}
 
 }

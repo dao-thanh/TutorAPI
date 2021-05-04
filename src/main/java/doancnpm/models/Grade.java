@@ -8,7 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,9 +26,9 @@ public class Grade {
 	@Column(name = "gradename")
 	private String gradename;
 	
-//	@OneToMany(mappedBy = "grade")
-//	@JsonIgnoreProperties("grade")
-//	private List<Tutor> tutors = new ArrayList<>();
+	@OneToMany(mappedBy = "grade")
+	@JsonIgnoreProperties("grade")
+	private List<Post> posts = new ArrayList<>();
 	
 	@ManyToMany(mappedBy = "grades")
 	@JsonIgnoreProperties("grades")
@@ -38,6 +40,25 @@ public class Grade {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	
+	
+
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}
+
+	public List<Tutor> getTutors() {
+		return tutors;
+	}
+
+	public void setTutors(List<Tutor> tutors) {
+		this.tutors = tutors;
 	}
 
 	public String getGradename() {

@@ -78,7 +78,7 @@ public class Tutor implements Serializable{
 	
 	@OneToMany(mappedBy = "tutor")
 	@JsonIgnoreProperties("tutor")
-	private List<Message> messages = new ArrayList<>();
+	private List<Comment> comments = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "tutor")
 	@JsonIgnoreProperties("tutor")
@@ -94,15 +94,16 @@ public class Tutor implements Serializable{
 
 
 
+	
 	@Column(name="schedule")
 	private String schedule;
-	
-	public List<Message> getMessages() {
-		return messages;
+
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	public String getRating() {

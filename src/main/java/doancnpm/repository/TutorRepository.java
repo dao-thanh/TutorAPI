@@ -9,6 +9,7 @@ import doancnpm.models.Tutor;
 
 
 public interface TutorRepository extends JpaRepository<Tutor, Long>{
+	
 	Optional<Tutor> findByuser_id(long id);
 	Tutor findOneById(Long id);
 	Tutor findByUser_id(long id);

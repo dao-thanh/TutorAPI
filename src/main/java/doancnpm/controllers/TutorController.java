@@ -3,8 +3,10 @@ package doancnpm.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.GsonJsonParser;
@@ -42,6 +44,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import doancnpm.models.Grade;
+import doancnpm.models.Subject;
 import doancnpm.models.Tutor;
 
 import doancnpm.payload.request.AddTutorRequest;
@@ -84,38 +88,74 @@ public class TutorController {
 //	}
 	@Autowired
 	private JwtUtils jwtUtils;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
-    private TutorRepository tutorRepository;
-	
+	private TutorRepository tutorRepository;
+
 	@GetMapping("/tutor/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
-	  public ResponseEntity<Tutor> getTutorById(@PathVariable("id") long id) {
-	    Tutor tutorData = tutorService.findTutorById(id);
-	    if (tutorData != null) {
-	      return new ResponseEntity<>(tutorData, HttpStatus.OK);
-	    } else {
-	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	    }
-	  }
-	
+	public ResponseEntity<TutorOutput> getTutorById(@PathVariable("id") long id) {
+		Tutor tutorData = tutorService.findTutorById(id);
+		
+		String schedule = tutorData.getSchedule();
+		TutorOutput tutorOutput = new TutorOutput();
+		tutorOutput.setId(tutorData.getId());
+		tutorOutput.setQualification(tutorData.getQualification());
+		tutorOutput.setAvatar(tutorData.getAvatar());
+		tutorOutput.setRating(tutorData.getRating());
+		tutorOutput.setDescription(tutorData.getDescription());
+		tutorOutput.setAddress(tutorData.getAddress());
+		tutorOutput.setName(tutorData.getUser().getName());
+		tutorOutput.setPhonenumber(tutorData.getUser().getPhonenumber());
+		Set<Grade> setGrades = tutorData.getGrades();
+		Set<String> grades = new HashSet<String>();
+		for(Grade grade : setGrades) {
+			grades.add(grade.getGradename());
+		}
+		tutorOutput.setGrades(grades);
+		
+		Set<Subject> setSubjects = tutorData.getSubjects();
+		Set<String> subjects = new HashSet<String>();
+		for(Subject subject : setSubjects ) {
+			subjects.add(subject.getSubjectname());
+		}
+		tutorOutput.setSubjects(subjects);
+
+		if (schedule != null) {
+			// tutorOutput.setSchedule(jsonObject);
+			try {
+				Map<String, Boolean> schedules = new ObjectMapper().readValue(schedule, HashMap.class);
+				System.out.println(schedules);
+				tutorOutput.setSchedules(schedules);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if (tutorData != null) {
+			return new ResponseEntity<>(tutorOutput, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+	}
+
 	@GetMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
-	public Map<String,List<TutorOutput>> showTutor(){
-		
+	public Map<String, List<TutorOutput>> showTutor() {
+
 		System.out.println("ok");
 		List<Tutor> tutors = tutorService.findAll();
 		List<TutorOutput> tutorOutputs = new ArrayList<TutorOutput>();
-		for(int i=0;i<tutors.size();i++)
-		{
-			
+		for (int i = 0; i < tutors.size(); i++) {
+
 			String schedule = tutors.get(i).getSchedule();
-			//JSONObject jsonObject= new JSONObject(schedule );
-			
-			
+			// JSONObject jsonObject= new JSONObject(schedule );
+
 			TutorOutput tutorOutput = new TutorOutput();
 			tutorOutput.setId(tutors.get(i).getId());
 			tutorOutput.setQualification(tutors.get(i).getQualification());
@@ -123,33 +163,40 @@ public class TutorController {
 			tutorOutput.setRating(tutors.get(i).getRating());
 			tutorOutput.setDescription(tutors.get(i).getDescription());
 			tutorOutput.setAddress(tutors.get(i).getAddress());
-			tutorOutput.setUser(tutors.get(i).getUser());
-			tutorOutput.setSubjects(tutors.get(i).getSubjects());
-			tutorOutput.setGrades(tutors.get(i).getGrades());
-		
-			
-			//tutorOutput.setSchedule(jsonObject);
-			try {
-				Map<String,Boolean> schedules =new ObjectMapper().readValue(schedule, HashMap.class);
-				System.out.println(schedules);
-				tutorOutput.setSchedules(schedules);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			tutorOutput.setName(tutors.get(i).getUser().getName());
+			tutorOutput.setPhonenumber(tutors.get(i).getUser().getPhonenumber());
+			Set<Grade> setGrades = tutors.get(i).getGrades();
+			Set<String> grades = new HashSet<String>();
+			for(Grade grade : setGrades) {
+				grades.add(grade.getGradename());
 			}
+			tutorOutput.setGrades(grades);
 			
+			Set<Subject> setSubjects = tutors.get(i).getSubjects();
+			Set<String> subjects = new HashSet<String>();
+			for(Subject subject : setSubjects ) {
+				subjects.add(subject.getSubjectname());
+			}
+			tutorOutput.setSubjects(subjects);
 			
+			if (schedule != null) {
+				// tutorOutput.setSchedule(jsonObject);
+				try {
+					Map<String, Boolean> schedules = new ObjectMapper().readValue(schedule, HashMap.class);
+					System.out.println(schedules);
+					tutorOutput.setSchedules(schedules);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 			tutorOutputs.add(tutorOutput);
-			
-			
-			
-			
+
 		}
-		
-		
-		
-		Map<String,List<TutorOutput>> response=new HashMap<String, List<TutorOutput>>();
-		
+
+		Map<String, List<TutorOutput>> response = new HashMap<String, List<TutorOutput>>();
+
 		response.put("tutors", tutorOutputs);
 //		//return ResponseEntity.ok(response);
 //		Gson gson=new Gson();
@@ -157,13 +204,11 @@ public class TutorController {
 //		String data=gson.toJson(tutors);
 //		System.out.println("Hehe"+data);
 //		return null;
-		//Map<String,String> a=new HashMap<String, String>();
-	    //a.put("name","Thanh");
-		
+
 		return response;
-	
+
 	}
-	
+
 //	@GetMapping(value = "/pagetutor")
 //	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
 //	public TutorResponse showTutorPage(@RequestParam("page") int page, @RequestParam("limit") int limit){
@@ -179,7 +224,7 @@ public class TutorController {
 //		return result;
 //	
 //	}
-	
+
 //	@PostMapping(value = "/tutor")
 //	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
 //	public void createNew(@RequestBody AddTutorRequest model) {
@@ -187,31 +232,32 @@ public class TutorController {
 //		tutorService.save(model);
 //		
 //	}
-	
+
 	@PutMapping(value = "/tutor")
-	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public String updateUser(HttpServletRequest request, @RequestBody AddTutorRequest model) {
-		
+	@PreAuthorize("hasRole('TUTOR')")
+	public String updateTutor(HttpServletRequest request, @RequestBody AddTutorRequest model) {
+
 		String jwt = parseJwt(request);
-    	String username ="";
+		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}	
 		tutorService.save(username, model);
 		String message = "Update tutor is success !\n";
-	    return message;  
-	}  
-	
+		return message;
+	}
+
 	@DeleteMapping(value = "/tutor")
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteUser(@RequestBody long[] ids) {
 		tutorService.delete(ids);
 	}
-	 private String parseJwt(HttpServletRequest request) {
-			String headerAuth = request.getHeader("Authorization");
-			if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
-	        	return headerAuth.replace("Bearer ","");
-	        }
-			return null;
+
+	private String parseJwt(HttpServletRequest request) {
+		String headerAuth = request.getHeader("Authorization");
+		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
+			return headerAuth.replace("Bearer ", "");
 		}
+		return null;
+	}
 }

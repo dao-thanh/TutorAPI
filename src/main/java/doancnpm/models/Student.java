@@ -31,11 +31,23 @@ public class Student {
 	@JsonIgnoreProperties("student")
 	private List<Invitation> invitations = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "student")
+	@JsonIgnoreProperties("student")
+	private List<Comment> comments = new ArrayList<>();
+	
+	
 	
 	@OneToMany(mappedBy = "student")
 	@JsonIgnoreProperties("student")
 	private List<Post> post = new ArrayList<>();
 	
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}	
 	@OneToMany(mappedBy = "student")
 	@JsonIgnoreProperties("student")
 	private List<Suggestion> suggestion = new ArrayList<>();

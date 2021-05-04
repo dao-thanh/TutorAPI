@@ -32,6 +32,20 @@ public class Subject{
 	@JsonIgnoreProperties("subjects")
 	private List<Tutor> tutors = new ArrayList<>();
 	
+	@ManyToMany(mappedBy = "subjects")
+	@JsonIgnoreProperties("subjects")
+	private List<Post> posts = new ArrayList<>();
+	
+	
+	
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}
+
 	public Integer getId() {
 		return id;
 	}

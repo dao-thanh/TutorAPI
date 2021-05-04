@@ -3,8 +3,10 @@ package doancnpm.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import doancnpm.models.Post;
 import doancnpm.models.Student;
+import doancnpm.models.Subject;
+import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.payload.response.PostOut;
@@ -95,14 +99,20 @@ public class PostController {
 			String schedules = post.get(i).getSchedule();
 			PostOut postOut = new PostOut();
 			postOut.setId(post.get(i).getId());
+			postOut.setIdStudent(post.get(i).getStudent().getId());
 			postOut.setAddress(post.get(i).getAddress());
-			postOut.setGrade(post.get(i).getGrade());
-			postOut.setSubject(post.get(i).getSubject());
+			postOut.setGrade(post.get(i).getGrade().getGradename());
+			Set<Subject> setSubjects = post.get(i).getSubjects();
+			Set<String> subjects = new HashSet<String>();
+			for(Subject subject : setSubjects ) {
+				subjects.add(subject.getSubjectname());
+			}
+			postOut.setSubjects(subjects);
 			postOut.setDescription(post.get(i).getDescription());
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
-			postOut.setIdStudent(student.getId());
+			
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
@@ -146,18 +156,23 @@ public class PostController {
 	@GetMapping("/post/{id}")
 	public Map<String, PostOut> getPostById(@PathVariable("id") long id) {
 		Post post = postService.findPostById(id);
-
 		String schedules = post.getSchedule();
 		PostOut postOut = new PostOut();
 		postOut.setId(post.getId());
+		postOut.setIdStudent(post.getStudent().getId());
 		postOut.setAddress(post.getAddress());
-		postOut.setGrade(post.getGrade());
-		postOut.setSubject(post.getSubject());
+		postOut.setGrade(post.getGrade().getGradename());
+		Set<Subject> setSubjects = post.getSubjects();
+		Set<String> subjects = new HashSet<String>();
+		for(Subject subject : setSubjects ) {
+			subjects.add(subject.getSubjectname());
+		}
+		postOut.setSubjects(subjects);
 		postOut.setDescription(post.getDescription());
 		postOut.setPhoneNumber(post.getPhoneNumber());
 		postOut.setPrice(post.getPrice());
 		postOut.setTitle(post.getTitle());
-		postOut.setIdStudent(post.getStudent().getId());
+		
 		try {
 			Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 			System.out.println(schedule);
@@ -180,8 +195,8 @@ public class PostController {
 			PostOut postOut = new PostOut();
 			postOut.setId(post.get(i).getId());
 			postOut.setAddress(post.get(i).getAddress());
-			postOut.setGrade(post.get(i).getGrade());
-			postOut.setSubject(post.get(i).getSubject());
+//			postOut.setGrade(post.get(i).getGrade());
+//			postOut.setSubject(post.get(i).getSubject());
 			postOut.setDescription(post.get(i).getDescription());
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
@@ -239,8 +254,8 @@ public class PostController {
 			PostOut postOut = new PostOut();
 			postOut.setId(posts.get(i).getId());
 			postOut.setAddress(posts.get(i).getAddress());
-			postOut.setGrade(posts.get(i).getGrade());
-			postOut.setSubject(posts.get(i).getSubject());
+			//postOut.setGrade(posts.get(i).getGrade());
+			//postOut.setSubject(posts.get(i).getSubject());
 			postOut.setDescription(posts.get(i).getDescription());
 			postOut.setPhoneNumber(posts.get(i).getPhoneNumber());
 			postOut.setPrice(posts.get(i).getPrice());

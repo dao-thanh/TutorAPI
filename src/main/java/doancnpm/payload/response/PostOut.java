@@ -1,24 +1,29 @@
 package doancnpm.payload.response;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import doancnpm.models.Student;
+import doancnpm.models.Subject;
 
 public class PostOut {
 	private Long id;
-	private String address;
-	private String subject;
-	private String grade;
+	private Long idStudent;
 	private String title;
-	private String description;
+	@JsonIgnoreProperties("tutors")
+	private String grade;
+	@JsonIgnoreProperties("posts")
+	private Set<String> subjects;
 	private String price;
 	private String phoneNumber;
+	private String address;
+	private String description;
 	private Map<String,Boolean> schedule;
-//	@JsonIgnoreProperties("student")
-//	private Student student;
-	private Long idStudent;
+	
+	
 	public Long getIdStudent() {
 		return idStudent;
 	}
@@ -37,11 +42,15 @@ public class PostOut {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String getSubject() {
-		return subject;
+	
+	
+	
+	
+	public Set<String> getSubjects() {
+		return subjects;
 	}
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setSubjects(Set<String> subjects) {
+		this.subjects = subjects;
 	}
 	public String getGrade() {
 		return grade;
@@ -79,12 +88,6 @@ public class PostOut {
 	public void setSchedule(Map<String, Boolean> schedule) {
 		this.schedule = schedule;
 	}
-//	public Student getStudent() {
-//		return student;
-//	}
-//	public void setStudent(Student student) {
-//		this.student = student;
-//	}
 	
 	
 }

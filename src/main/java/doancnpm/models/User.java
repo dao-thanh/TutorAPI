@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,6 +41,14 @@ public class User {
 
 	@Size(max = 120)
 	private String password;
+	
+	private Long age;
+	
+	@Column(name = "name", nullable = true)
+	private String name;
+	
+	@Column(name = "gender", nullable = true)
+	private Long gender;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -69,6 +78,26 @@ public class User {
 	@JsonIgnoreProperties("user")
 	private Student student;
 	
+
+	
+	
+	public Long getAge() {
+		return age;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	
+	public void setAge(Long age) {
+		this.age = age;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 
 
 	public Student getStudent() {
@@ -142,4 +171,13 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public Long getGender() {
+		return gender;
+	}
+
+	public void setGender(Long gender) {
+		this.gender = gender;
+	}
+	
 }

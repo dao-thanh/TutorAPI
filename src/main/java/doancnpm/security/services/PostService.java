@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import doancnpm.converter.PostConverter;
+import doancnpm.models.Admin;
 import doancnpm.models.Grade;
 import doancnpm.models.Post;
 import doancnpm.models.Student;
@@ -26,10 +27,12 @@ import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.SubjectRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.repository.AdminRepository;
 import doancnpm.security.iPostService;
 
 @Service
 public class PostService implements iPostService {
+	
 
 	@Autowired
 	private PostRepository postRepository;
@@ -49,6 +52,9 @@ public class PostService implements iPostService {
 	@Autowired
 	private SubjectRepository subjectRepository;
 	
+	@Autowired
+	private AdminRepository adminRepository;
+	
 	@Override
 	public void saveCreate(String username, PostRequest postDTO) {
 		Set<String> strSubject = postDTO.getSubjects();
@@ -56,39 +62,31 @@ public class PostService implements iPostService {
 		strSubject.forEach(subject -> {
 			switch (subject) {
 			case "Toán":
-				Subject toan = subjectRepository.findBysubjectname("Toán")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
-
+				Subject toan = subjectRepository.findBysubjectname("Toán");
+					
 				subjects.add(toan);
 				break;
 			case "Tiếng Anh":
-				Subject tienganh = subjectRepository.findBysubjectname("Tiếng Anh")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				Subject tienganh = subjectRepository.findBysubjectname("Tiếng Anh");
 				subjects.add(tienganh);
 				break;
 			case "Hóa":
-				Subject hoa = subjectRepository.findBysubjectname("Hóa")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				Subject hoa = subjectRepository.findBysubjectname("Hóa");
 
 				subjects.add(hoa);
 				break;
 		
 			case "Lý":
-			Subject ly = subjectRepository.findBysubjectname("Lý")
-					.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
-
+			Subject ly = subjectRepository.findBysubjectname("Lý");
+				
 			subjects.add(ly);
 			break;
 			case "Ngữ Văn":
-				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
-
+				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn");
 				subjects.add(nguvan);
 				break;
 			case "Lịch Sử":
-				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
-
+				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử");
 				subjects.add(lichsu);
 				break;	
 			}
@@ -113,8 +111,8 @@ public class PostService implements iPostService {
 
 		}
 		
-		Grade grade = gradeRepository.findBygradename(postDTO.getGrade())
-				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+		Grade grade = gradeRepository.findBygradename(postDTO.getGrade());
+//				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
 		
 		
 		postEntity.setSchedule(jsonResp);
@@ -131,38 +129,37 @@ public class PostService implements iPostService {
 		strSubject.forEach(subject -> {
 			switch (subject) {
 			case "Toán":
-				Subject toan = subjectRepository.findBysubjectname("Toán")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
-
+				Subject toan = subjectRepository.findBysubjectname("Toán");
+						
 				subjects.add(toan);
 				break;
 			case "Tiếng anh":
-				Subject tienganh = subjectRepository.findBysubjectname("Tiếng anh")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				Subject tienganh = subjectRepository.findBysubjectname("Tiếng anh");
+						
 				subjects.add(tienganh);
 				break;
 			case "Hóa":
-				Subject hoa = subjectRepository.findBysubjectname("Hóa")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				Subject hoa = subjectRepository.findBysubjectname("Hóa");
+				
 
 				subjects.add(hoa);
 				break;
 		
 			case "Lý":
-			Subject ly = subjectRepository.findBysubjectname("Lý")
-					.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+			Subject ly = subjectRepository.findBysubjectname("Lý");
+			
 
 			subjects.add(ly);
 			break;
 			case "Ngữ Văn":
-				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn");
+				
 
 				subjects.add(nguvan);
 				break;
 			case "Lịch Sử":
-				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử")
-						.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
+				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử");
+			
 
 				subjects.add(lichsu);
 				break;	
@@ -181,8 +178,8 @@ public class PostService implements iPostService {
 
 		postEntity = postConverter.toEntity(postDTO, post);
 		
-		Grade grade = gradeRepository.findBygradename(postDTO.getGrade())
-				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+		Grade grade = gradeRepository.findBygradename(postDTO.getGrade());
+//				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
 		
 		postEntity.setGrade(grade);
 		postEntity.setSubjects(subjects);
@@ -244,6 +241,15 @@ public class PostService implements iPostService {
 	@Override
 	public List<Post> findByIdStudent(long idStudent) {
 		return  postRepository.findByStudent_id(idStudent);
+	}
+
+	@Override
+	public void admin_delete(String username, long id) {
+		User user = userRepository.findOneByusername(username);
+		Admin admin = adminRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Admin Not Found"));
+		postRepository.delete(id);
+		
 	}
 
 

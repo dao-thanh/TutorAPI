@@ -3,6 +3,7 @@ package doancnpm.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,8 @@ public class Grade {
 	@Column(name = "gradename")
 	private String gradename;
 	
-	@OneToMany(mappedBy = "grade")
+	@OneToMany(mappedBy = "grade", orphanRemoval = true,
+		    cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("grade")
 	private List<Post> posts = new ArrayList<>();
 	

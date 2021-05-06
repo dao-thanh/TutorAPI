@@ -78,9 +78,19 @@ public class User {
 	@JsonIgnoreProperties("user")
 	private Student student;
 	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("user")
+	private Admin admin;
+	
+	
+	public Admin getAdmin() {
+		return admin;
+	}
 
-	
-	
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
+	}
+
 	public Long getAge() {
 		return age;
 	}

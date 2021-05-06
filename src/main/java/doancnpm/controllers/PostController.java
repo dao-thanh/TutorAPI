@@ -29,15 +29,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import doancnpm.models.Grade;
 import doancnpm.models.Post;
 import doancnpm.models.Student;
 import doancnpm.models.Subject;
-import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.payload.response.PostOut;
+import doancnpm.repository.GradeRepository;
 import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
+import doancnpm.repository.SubjectRepository;
 import doancnpm.repository.UserRepository;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
@@ -48,6 +50,11 @@ public class PostController {
 	@Autowired
 	PostRepository postRepository;
 
+	@Autowired
+	SubjectRepository subjectRepository;
+
+	@Autowired
+	private GradeRepository gradeRepository;
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
@@ -104,7 +111,7 @@ public class PostController {
 			postOut.setGrade(post.get(i).getGrade().getGradename());
 			Set<Subject> setSubjects = post.get(i).getSubjects();
 			Set<String> subjects = new HashSet<String>();
-			for(Subject subject : setSubjects ) {
+			for (Subject subject : setSubjects) {
 				subjects.add(subject.getSubjectname());
 			}
 			postOut.setSubjects(subjects);
@@ -112,7 +119,7 @@ public class PostController {
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
-			
+
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
@@ -164,7 +171,7 @@ public class PostController {
 		postOut.setGrade(post.getGrade().getGradename());
 		Set<Subject> setSubjects = post.getSubjects();
 		Set<String> subjects = new HashSet<String>();
-		for(Subject subject : setSubjects ) {
+		for (Subject subject : setSubjects) {
 			subjects.add(subject.getSubjectname());
 		}
 		postOut.setSubjects(subjects);
@@ -172,7 +179,7 @@ public class PostController {
 		postOut.setPhoneNumber(post.getPhoneNumber());
 		postOut.setPrice(post.getPrice());
 		postOut.setTitle(post.getTitle());
-		
+
 		try {
 			Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 			System.out.println(schedule);
@@ -195,8 +202,13 @@ public class PostController {
 			PostOut postOut = new PostOut();
 			postOut.setId(post.get(i).getId());
 			postOut.setAddress(post.get(i).getAddress());
-//			postOut.setGrade(post.get(i).getGrade());
-//			postOut.setSubject(post.get(i).getSubject());
+			postOut.setGrade(post.get(i).getGrade().getGradename());
+			Set<Subject> setSubjects = post.get(i).getSubjects();
+			Set<String> subjects = new HashSet<String>();
+			for (Subject subject : setSubjects) {
+				subjects.add(subject.getSubjectname());
+			}
+			postOut.setSubjects(subjects);
 			postOut.setDescription(post.get(i).getDescription());
 			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
@@ -217,45 +229,70 @@ public class PostController {
 		return response;
 	}
 
-	@GetMapping("/post/apisearch")
-	public Map<String, List<PostOut>> getAllTutors(@RequestParam(required = false) String subject, String grade,
-			String address, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+	@GetMapping("/post/search")
+	public Map<String, List<PostOut>> searchPost(@RequestParam(required = false) String grade, String address,
+			String subject) {
 		List<Post> posts = new ArrayList<Post>();
-		Pageable paging = new PageRequest(page, size);
+		// Pageable paging = new PageRequest(page, size);
+		Grade lop = gradeRepository.findBygradename(grade);
+		// .orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
+		int grade_id = 0;
+		if (lop != null) {
+			grade_id = lop.getId();
+		}
+		List<Subject> subjects = new ArrayList<Subject>();
 
-		Page<Post> pageTuts;
-		if (subject == null && grade == null && address == null)
-			pageTuts = postRepository.findAll(paging);
+		Subject mon = subjectRepository.findBysubjectname(subject);
+//				.orElseThrow(() -> new RuntimeException("Error: Subject is not found."));
 
-		else if (subject != null && grade == null && address == null)
-			pageTuts = postRepository.findBySubject(subject, paging);
+		subjects.add(mon);
 
-		else if (subject == null && grade != null && address == null)
-			pageTuts = postRepository.findByGrade(grade, paging);
+		// List<Post> pageTuts = null;
+		// List<Post> post = new ArrayList<Post>();
+
+//		System.out.println("ok");
+//		 post =  postRepository.findBySubjects(subjects);
+//		 for(int i=0;i<post.size();i++)
+//			 System.out.println(post.get(i).getTitle());
+
+		if (grade == null && address == null && subject == null)
+			posts = postRepository.findAll();
+
+		else if (subject != null && grade == null && address == null) {
+			posts = postRepository.findBySubjects(subjects);
+			
+		} else if (grade != null && address == null && subject == null)
+			posts = postRepository.findByGrade_id(grade_id);
 
 		else if (subject == null && grade == null && address != null)
-			pageTuts = postRepository.findByAddress(address, paging);
+			posts = postRepository.findByAddress(address);
 
 		else if (subject == null && grade != null && address != null)
-			pageTuts = postRepository.findByGradeInAndAddressIn(grade, address, paging);
-
-		else if (subject != null && grade == null && address != null)
-			pageTuts = postRepository.findBySubjectInAndAddressIn(subject, address, paging);
+			posts = postRepository.findByGrade_idInAndAddressIn(grade_id, address);
 
 		else if (subject != null && grade != null && address == null)
-			pageTuts = postRepository.findByGradeInAndSubjectIn(grade, subject, paging);
-		else {
-			pageTuts = postRepository.findByGradeInAndSubjectInAndAddress(grade, subject, address, paging);
-		}
-		posts = pageTuts.getContent();
+			posts = postRepository.findBySubjectsInAndGrade_idIn(subjects, grade_id);
+
+		else if (subject != null && grade == null && address != null)
+			posts = postRepository.findBySubjectsInAndAddressIn(subjects, address);
+
+		else
+			posts = postRepository.findBySubjectsInAndGrade_idInAndAddressIn(subjects, grade_id, address);
+
+		// posts = pageTuts.getContent();
 		List<PostOut> postOuts = new ArrayList<PostOut>();
 		for (int i = 0; i < posts.size(); i++) {
 			String schedules = posts.get(i).getSchedule();
 			PostOut postOut = new PostOut();
 			postOut.setId(posts.get(i).getId());
 			postOut.setAddress(posts.get(i).getAddress());
-			//postOut.setGrade(posts.get(i).getGrade());
-			//postOut.setSubject(posts.get(i).getSubject());
+			postOut.setGrade(posts.get(i).getGrade().getGradename());
+			Set<Subject> setSubjects = posts.get(i).getSubjects();
+			Set<String> subjects1 = new HashSet<String>();
+			for (Subject subject1 : setSubjects) {
+				subjects1.add(subject1.getSubjectname());
+			}
+			postOut.setSubjects(subjects1);
 			postOut.setDescription(posts.get(i).getDescription());
 			postOut.setPhoneNumber(posts.get(i).getPhoneNumber());
 			postOut.setPrice(posts.get(i).getPrice());

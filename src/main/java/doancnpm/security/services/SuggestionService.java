@@ -60,7 +60,7 @@ public class SuggestionService implements iSuggestionService {
 
 		Student student = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student not found"));
-		Tutor tutor = tutorRepository.findOne(idTutor);
+		Tutor tutor = tutorRepository.findOneById(idTutor);
 		Post post = postRepository.findOne(idPost);
 		Suggestion oldSuggestion = suggestionRepository.findByTutor_idAndPost_idAndStudent_id(tutor.getId(), post.getId(), student.getId());
 		oldSuggestion.setStatus(1);

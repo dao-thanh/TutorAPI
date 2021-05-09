@@ -21,6 +21,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -90,6 +91,7 @@ public class Post  {
 	private String address;
 
 	@Column(name = "schedule")
+	@Size(max = 500)
 	private String schedule;
 
 	@ManyToOne

@@ -1,5 +1,6 @@
 package doancnpm.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,11 +22,12 @@ public class Admin {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
 	@JsonIgnoreProperties("admin")
-    private User user;
+	private User user;
 
 	public Long getId() {
 		return id;
@@ -39,5 +44,5 @@ public class Admin {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
+
 }

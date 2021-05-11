@@ -15,6 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -30,7 +33,9 @@ public class Grade {
 	@OneToMany(mappedBy = "grade", orphanRemoval = true,
 		    cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("grade")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Post> posts = new ArrayList<>();
+	
 	
 	@ManyToMany(mappedBy = "grades")
 	@JsonIgnoreProperties("grades")

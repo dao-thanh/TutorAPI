@@ -11,6 +11,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,19 +23,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import doancnpm.models.ERole;
 import doancnpm.models.Post;
+import doancnpm.models.Role;
 import doancnpm.models.Subject;
+import doancnpm.models.User;
 import doancnpm.payload.response.PostOut;
+import doancnpm.payload.response.UserOutput;
 import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.SubjectRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.IUserService;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
 
 @CrossOrigin
 @RestController
 public class AdminController {
+	@Autowired
+	private IUserService userService;
 
 	@Autowired
 	PostRepository postRepository;
@@ -50,7 +59,7 @@ public class AdminController {
 
 	@Autowired
 	private JwtUtils jwtUtils;
-	
+
 	private String parseJwt(HttpServletRequest request) {
 		String headerAuth = request.getHeader("Authorization");
 		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
@@ -58,6 +67,7 @@ public class AdminController {
 		}
 		return null;
 	}
+
 	@GetMapping(value = "/post/admin")
 	public Map<String, List<PostOut>> showPost() {
 		List<Post> post = postService.findAll();
@@ -93,7 +103,7 @@ public class AdminController {
 		response.put("post", postOuts);
 		return response;
 	}
-	
+
 	@GetMapping("/post/admin/{id}")
 	public Map<String, PostOut> getPostById(@PathVariable("id") long id) {
 		Post post = postService.findPostById(id);
@@ -126,7 +136,7 @@ public class AdminController {
 		response.put("post", postOut);
 		return response;
 	}
-	
+
 	@DeleteMapping(value = "/api/post/admin/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deletePost(HttpServletRequest request, @PathVariable("id") long id) {
@@ -136,6 +146,66 @@ public class AdminController {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}
 		postService.admin_delete(username, id);
+		System.out.println("Delete is successed");
+	}
+
+	@GetMapping(value = "/admin/user")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String, List<UserOutput>> showUser() {
+		List<User> user = userService.all();
+		List<UserOutput> userOutputs = new ArrayList<UserOutput>();
+		for (int i = 0; i < user.size(); i++) {
+			UserOutput userOutput = new UserOutput();
+			userOutput.setId(user.get(i).getId());
+			userOutput.setUsername(user.get(i).getUsername());
+			userOutput.setPassword(user.get(i).getPassword());
+			userOutput.setEmail(user.get(i).getEmail());
+			userOutput.setPhonenumber(user.get(i).getPhonenumber());
+			Set<Role> setRoles = user.get(i).getRoles();
+			Set<ERole> roles = new HashSet<ERole>();
+			for (Role role : setRoles) {
+				roles.add(role.getName());
+			}
+			userOutput.setRoles(roles);
+			userOutputs.add(userOutput);
+		}
+		Map<String, List<UserOutput>> response = new HashMap<String, List<UserOutput>>();
+		response.put("user", userOutputs);
+		return response;
+
+	}
+
+	@GetMapping("/admin/user/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String, UserOutput> getUserById(@PathVariable("id") long id) {
+		User user = userRepository.findOne(id);
+		UserOutput userOutput = new UserOutput();
+		userOutput.setId(user.getId());
+		userOutput.setUsername(user.getUsername());
+		userOutput.setPassword(user.getPassword());
+		userOutput.setEmail(user.getEmail());
+		userOutput.setPhonenumber(user.getPhonenumber());
+		Set<Role> setRoles = user.getRoles();
+		Set<ERole> roles = new HashSet<ERole>();
+		for (Role role : setRoles) {
+			roles.add(role.getName());
+		}
+		userOutput.setRoles(roles);
+
+		Map<String, UserOutput> response = new HashMap<String, UserOutput>();
+		response.put("user",userOutput);
+		return response;
+}
+
+	@DeleteMapping(value = "/admin/user/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void deleteUser(HttpServletRequest request, @PathVariable("id") long id) {
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		userService.admin_delete(username, id);
 		System.out.println("Delete is successed");
 	}
 }

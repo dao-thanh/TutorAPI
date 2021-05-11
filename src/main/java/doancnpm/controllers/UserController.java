@@ -31,53 +31,55 @@ import doancnpm.security.jwt.JwtUtils;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-	
+
 	@Autowired
 	private IUserService userService;
-	
+
 	@Autowired
 	private JwtUtils jwtUtils;
-	
+
 	@GetMapping(value = "/user")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Map<String,List<User>> all(){
+	public Map<String, List<User>> all() {
 		List<User> user = userService.all();
-		Map<String,List<User>> response=new HashMap<String, List<User>>();
+		Map<String, List<User>> response = new HashMap<String, List<User>>();
 		response.put("users", user);
 		return response;
 	}
-	
+
 	@GetMapping("/user/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	  public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
-	    User userData = userService.getUserById(id);
+	public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
+		User userData = userService.getUserById(id);
 
-	    if (userData != null) {
-	      return new ResponseEntity<>(userData, HttpStatus.OK);
-	    } else {
-	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	    }
-	  }
-	
+		if (userData != null) {
+			return new ResponseEntity<>(userData, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@PutMapping(value = "/user")
 	@PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
 	public String updateUser(HttpServletRequest request, @RequestBody UserRequest model) {
-		
+
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}
-		
-		userService.save(username, model);;
-	    return "Update user is success";  
-	  }  
-	
+
+		userService.save(username, model);
+		;
+		return "Update user is success";
+	}
+
 	@DeleteMapping(value = "/user")
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteUser(@RequestBody long[] ids) {
 		userService.delete(ids);
 	}
+
 	private String parseJwt(HttpServletRequest request) {
 		String headerAuth = request.getHeader("Authorization");
 		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {

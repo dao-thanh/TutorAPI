@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -23,10 +26,12 @@ public class Subject {
 	@Column(name = "subjectname")
 	private String subjectname;
 
+	
 	@ManyToMany(mappedBy = "subjects")
 	@JsonIgnoreProperties("subjects")
 	private List<Tutor> tutors = new ArrayList<>();
 
+	
 	@ManyToMany(mappedBy = "subjects")
 	@JsonIgnoreProperties("subjects")
 	private List<Post> posts = new ArrayList<>();

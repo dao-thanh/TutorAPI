@@ -11,9 +11,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
@@ -260,7 +257,7 @@ public class PostController {
 
 		else if (subject != null && grade == null && address == null) {
 			posts = postRepository.findBySubjects(subjects);
-			
+
 		} else if (grade != null && address == null && subject == null)
 			posts = postRepository.findByGrade_id(grade_id);
 

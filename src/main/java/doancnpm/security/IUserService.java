@@ -12,4 +12,5 @@ public interface IUserService {
 	 User getUserById(long id);
 	void save(String username, UserRequest userRequest);
 	void delete(long[] ids);
+	void admin_delete(String username, long id);
 }

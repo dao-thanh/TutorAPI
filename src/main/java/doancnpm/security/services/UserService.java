@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import doancnpm.converter.UserConverter;
+import doancnpm.models.Admin;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddUserRequest;
 import doancnpm.payload.request.UserRequest;
+import doancnpm.repository.AdminRepository;
 import doancnpm.repository.UserRepository;
 import doancnpm.security.IUserService;
 @Service
@@ -21,6 +24,9 @@ public class UserService implements IUserService{
 	
 	@Autowired
 	private UserConverter userConverter;
+	
+	@Autowired
+	private AdminRepository adminRepository;
 	
 	@Autowired
 	PasswordEncoder encoder;
@@ -60,6 +66,16 @@ public class UserService implements IUserService{
 		for(long item:ids) {
 			userRepository.delete(item);
 		}
+	}
+
+
+	@Override
+	public void admin_delete(String username, long id) {
+		User user = userRepository.findOneByusername(username);
+		Admin admin = adminRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Admin Not Found"));
+		userRepository.delete(id);
+		
 	}
 	
 }

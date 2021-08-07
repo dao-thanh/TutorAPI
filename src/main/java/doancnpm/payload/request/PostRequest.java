@@ -9,13 +9,13 @@ public class PostRequest extends BaseRequest<PostRequest> {
 	private String student;
 	private String title;
 	private String description;
-	private Set<String> subjects;
+	private Set<String> subject;
 	private String grade;
 	private String price;
-	private String phoneNumber;
+	private String phonenumber;
 	private String address;
 	private Long studentID;
-	private Map<String, Boolean> schedule;
+	private Map<String, Boolean> schedules;
 
 	public Long getStudentID() {
 		return studentID;
@@ -25,13 +25,7 @@ public class PostRequest extends BaseRequest<PostRequest> {
 		this.studentID = studentID;
 	}
 
-	public Map<String, Boolean> getSchedule() {
-		return schedule;
-	}
-
-	public void setSchedule(Map<String, Boolean> schedule) {
-		this.schedule = schedule;
-	}
+	
 
 	public String getStudent() {
 		return student;
@@ -41,14 +35,21 @@ public class PostRequest extends BaseRequest<PostRequest> {
 		this.student = student;
 	}
 
-	
 
-	public Set<String> getSubjects() {
-		return subjects;
+	public Set<String> getSubject() {
+		return subject;
 	}
 
-	public void setSubjects(Set<String> subjects) {
-		this.subjects = subjects;
+	public void setSubject(Set<String> subject) {
+		this.subject = subject;
+	}
+
+	public Map<String, Boolean> getSchedules() {
+		return schedules;
+	}
+
+	public void setSchedules(Map<String, Boolean> schedules) {
+		this.schedules = schedules;
 	}
 
 	public String getGrade() {
@@ -87,12 +88,14 @@ public class PostRequest extends BaseRequest<PostRequest> {
 		this.price = price;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	
+
+	public String getPhonenumber() {
+		return phonenumber;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
 	}
 
 	public String getAddress() {

@@ -12,12 +12,12 @@ public class PostOut {
 	@JsonIgnoreProperties("tutors")
 	private String grade;
 	@JsonIgnoreProperties("posts")
-	private Set<String> subjects;
+	private Set<String> subject;
 	private String price;
-	private String phoneNumber;
+	private String phonenumber;
 	private String address;
 	private String description;
-	private Map<String, Boolean> schedule;
+	private Map<String, Boolean> schedules;
 
 	public Long getIdStudent() {
 		return idStudent;
@@ -43,14 +43,7 @@ public class PostOut {
 		this.address = address;
 	}
 
-	public Set<String> getSubjects() {
-		return subjects;
-	}
-
-	public void setSubjects(Set<String> subjects) {
-		this.subjects = subjects;
-	}
-
+	
 	public String getGrade() {
 		return grade;
 	}
@@ -83,20 +76,27 @@ public class PostOut {
 		this.price = price;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public Set<String> getSubject() {
+		return subject;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setSubject(Set<String> subject) {
+		this.subject = subject;
 	}
 
-	public Map<String, Boolean> getSchedule() {
-		return schedule;
+	public String getPhonenumber() {
+		return phonenumber;
 	}
 
-	public void setSchedule(Map<String, Boolean> schedule) {
-		this.schedule = schedule;
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
 	}
 
+	public Map<String, Boolean> getSchedules() {
+		return schedules;
+	}
+
+	public void setSchedules(Map<String, Boolean> schedules) {
+		this.schedules = schedules;
+	}
 }

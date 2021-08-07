@@ -12,6 +12,7 @@ import doancnpm.converter.UserConverter;
 import doancnpm.models.Admin;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddUserRequest;
+import doancnpm.payload.request.PasswordRequest;
 import doancnpm.payload.request.UserRequest;
 import doancnpm.repository.AdminRepository;
 import doancnpm.repository.UserRepository;
@@ -36,8 +37,8 @@ public class UserService implements IUserService{
 		
 		User user = userRepository.findOneByusername(username);
 	
-		user.setUsername(userRequest.getUsername());
-		user.setPassword(encoder.encode(userRequest.getPassword()));
+//		user.setUsername(userRequest.getUsername());
+//		user.setPassword(encoder.encode(userRequest.getPassword()));
 		user.setEmail(userRequest.getEmail());
 		user.setPhonenumber(userRequest.getPhonenumber());
 		user.setName(userRequest.getName());
@@ -70,12 +71,47 @@ public class UserService implements IUserService{
 
 
 	@Override
-	public void admin_delete(String username, long id) {
-		User user = userRepository.findOneByusername(username);
-		Admin admin = adminRepository.findByuser_id(user.getId())
-				.orElseThrow(() -> new UsernameNotFoundException("Admin Not Found"));
+	public void admin_delete(long id) {
 		userRepository.delete(id);
 		
+	}
+
+
+	@Override
+	public User getUser(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void admin_update(UserRequest userRequest, long id) {
+		User user = userRepository.findOne(id);
+		
+//		user.setUsername(userRequest.getUsername());
+//		user.setPassword(encoder.encode(userRequest.getPassword()));
+		user.setEmail(userRequest.getEmail());
+		user.setPhonenumber(userRequest.getPhonenumber());
+		user.setName(userRequest.getName());
+		user.setAge(userRequest.getAge());
+		user.setGender(userRequest.getGender());
+		
+		userRepository.save(user);
+		
+	}
+
+	@Override
+	public void save_password(String username, PasswordRequest passwordRequest) {
+		User user = userRepository.findOneByusername(username);
+		user.setPassword(encoder.encode(passwordRequest.getNewPassword()));
+		userRepository.save(user);
+		
+	}
+	
+	@Override
+	public String getPassword(String username) {
+		User user = userRepository.findOneByusername(username);
+		return user.getPassword();
 	}
 	
 }

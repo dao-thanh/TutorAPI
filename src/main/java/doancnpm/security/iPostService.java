@@ -15,7 +15,7 @@ public interface iPostService {
 	void saveUpdate(String username, PostRequest postDTO, long id);
 
 	void delete(String username, long id);
-	void admin_delete(String username, long id);
+	void admin_delete(long id);
 
 	List<PostRequest> findAll(Pageable pageable);
 

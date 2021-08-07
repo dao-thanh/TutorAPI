@@ -13,5 +13,6 @@ public interface ITutorService {
 	int totalItem();
 	void save(String username, AddTutorRequest addTutorRequest);
 	Tutor findTutorById(Long id);
+	Tutor findTutor(String username);
 	void delete(long[] ids);
 }

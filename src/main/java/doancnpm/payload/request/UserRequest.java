@@ -2,9 +2,9 @@ package doancnpm.payload.request;
 
 public class UserRequest {
 	private Long id;
-	private String username;
+//	private String username;
 	private String email;
-	private String password;
+//	private String password;
 	private String phonenumber;
 	private Long age;
 	private String name;
@@ -12,15 +12,11 @@ public class UserRequest {
 	public Long getId() {
 		return id;
 	}
-	public String getUsername() {
-		return username;
-	}
+
 	public String getEmail() {
 		return email;
 	}
-	public String getPassword() {
-		return password;
-	}
+	
 	public String getPhonenumber() {
 		return phonenumber;
 	}
@@ -34,15 +30,11 @@ public class UserRequest {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
+	
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
+	
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}

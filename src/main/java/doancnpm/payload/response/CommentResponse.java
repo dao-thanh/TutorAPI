@@ -3,9 +3,17 @@ package doancnpm.payload.response;
 public class CommentResponse {
 	private Integer id;
 	private Long idStudent;
+	private String nameStudent;
 	private Long idTutor;
 	private String content;
 	
+	
+	public String getNameStudent() {
+		return nameStudent;
+	}
+	public void setNameStudent(String nameStudent) {
+		this.nameStudent = nameStudent;
+	}
 	public Long getIdStudent() {
 		return idStudent;
 	}

@@ -11,4 +11,5 @@ public interface iSuggestionService {
 	void reject(String username, long idPost, long idTutor);
 	void delete(String username, long id);
 	List<Suggestion> findByIdStudent(long idStudent);
+	List<Suggestion> findAll();
 }

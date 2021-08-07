@@ -56,18 +56,12 @@ public class CommentService implements ICommentService{
 		return  commentRepository.findBytutor_id(idTutor);
 	}
 
-	
+	@Override
+	public List<Comment> findAll() {
+		
+		return commentRepository.findAll();
+	}
 
-//	@Override
-//	public List<Comment> all() {
-//		List<Comment> messages = messageRepository.findAll();
-//		return messages;
-//	}
-//
-//	@Override
-//	public Comment getMessageById(long id) {
-//		Comment message = messageRepository.findOne(id);
-//		return message;
-//	}
+	
 	
 }

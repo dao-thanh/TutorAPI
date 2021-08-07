@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -78,7 +79,12 @@ public class Tutor implements Serializable {
 	@JsonIgnoreProperties("tutor")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Invitation> invitations = new ArrayList<>();
-
+	
+	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("tutor")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Rate> rates = new ArrayList<>();
+	
 //	@Column(name = "sang_2")
 //	private boolean sang_2 = false;
 //	@Column(name = "chieu_2")
@@ -86,7 +92,8 @@ public class Tutor implements Serializable {
 //	@Column(name = "toi_2")
 //	private boolean toi_2 = false;
 
-	@Column(name = "schedule")
+	@Column(name="schedule")
+	@Size(max = 500)
 	private String schedule;
 
 	public List<Comment> getComments() {

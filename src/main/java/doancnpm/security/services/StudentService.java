@@ -3,6 +3,7 @@ package doancnpm.security.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,10 +43,11 @@ public class StudentService implements IStudentService{
 		
 		User user = userRepository.findOneByusername(username);
 		
-		user.setUsername(studentRequest.getUsername());
 		user.setEmail(studentRequest.getEmail());
 		user.setPhonenumber(studentRequest.getPhonenumber());
-		user.setPassword(encoder.encode(studentRequest.getPassword()));
+		user.setName(studentRequest.getName());
+		user.setAge(studentRequest.getAge());
+		user.setGender(studentRequest.getGender());
 		userRepository.save(user);
 		
 //		Student student = new Student();
@@ -73,6 +75,14 @@ public class StudentService implements IStudentService{
 	public void delete(long[] ids) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Student findStudent(String username) {
+		User user = userRepository.findOneByusername(username);
+		Student student = studentRepository.findByuser_id(user.getId())
+				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
+		return student;
 	}
 	
 }

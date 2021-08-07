@@ -57,7 +57,7 @@ public class PostService implements iPostService {
 	
 	@Override
 	public void saveCreate(String username, PostRequest postDTO) {
-		Set<String> strSubject = postDTO.getSubjects();
+		Set<String> strSubject = postDTO.getSubject();
 		Set<Subject> subjects = new HashSet<>();
 		strSubject.forEach(subject -> {
 			switch (subject) {
@@ -66,6 +66,10 @@ public class PostService implements iPostService {
 					
 				subjects.add(toan);
 				break;
+			case "Tiếng Việt":
+				Subject tiengviet = subjectRepository.findBysubjectname("Tiếng Việt");
+				subjects.add(tiengviet);
+				break;	
 			case "Tiếng Anh":
 				Subject tienganh = subjectRepository.findBysubjectname("Tiếng Anh");
 				subjects.add(tienganh);
@@ -96,7 +100,7 @@ public class PostService implements iPostService {
 		Student oldStudent = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
 
-		Map<String, Boolean> schedule = postDTO.getSchedule();
+		Map<String, Boolean> schedule = postDTO.getSchedules();
 		Post postEntity = new Post();
 
 		postEntity = postConverter.toEntity(postDTO);
@@ -124,7 +128,7 @@ public class PostService implements iPostService {
 
 	@Override
 	public void saveUpdate(String username, PostRequest postDTO, long id) {
-		Set<String> strSubject = postDTO.getSubjects();
+		Set<String> strSubject = postDTO.getSubject();
 		Set<Subject> subjects = new HashSet<>();
 		strSubject.forEach(subject -> {
 			switch (subject) {
@@ -170,7 +174,7 @@ public class PostService implements iPostService {
 		Student student = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
 
-		Map<String, Boolean> schedule = postDTO.getSchedule();
+		Map<String, Boolean> schedule = postDTO.getSchedules();
 
 		Post postEntity = new Post();
 		
@@ -244,10 +248,7 @@ public class PostService implements iPostService {
 	}
 
 	@Override
-	public void admin_delete(String username, long id) {
-		User user = userRepository.findOneByusername(username);
-		Admin admin = adminRepository.findByuser_id(user.getId())
-				.orElseThrow(() -> new UsernameNotFoundException("Admin Not Found"));
+	public void admin_delete(long id) {
 		postRepository.delete(id);
 		
 	}

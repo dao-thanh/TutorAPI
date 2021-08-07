@@ -9,4 +9,5 @@ public interface IStudentService {
 	 Student getStudentById(long id);
 	 void save(String username, StudentRequest studentRequest);
 	 void delete(long[] ids);
+	 Student findStudent(String username);
 }

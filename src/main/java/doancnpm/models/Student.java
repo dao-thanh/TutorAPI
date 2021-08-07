@@ -32,14 +32,20 @@ public class Student {
 	@JsonIgnoreProperties("student")
     private User user;
 
-	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.ALL)
+	
+	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade=CascadeType.REMOVE)
 	@JsonIgnoreProperties("student")
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	//@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Invitation> invitations = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade=CascadeType.REMOVE)
 	@JsonIgnoreProperties("student")
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	//@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Rate> rates = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade=CascadeType.REMOVE)
+	@JsonIgnoreProperties("student")
+	//@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Comment> comments = new ArrayList<>();
 	
 	

@@ -96,4 +96,10 @@ public class SuggestionService implements iSuggestionService {
 		suggestionRepository.delete(id);
 	}
 
+	@Override
+	public List<Suggestion> findAll() {
+		// TODO Auto-generated method stub
+		return suggestionRepository.findAll();
+	}
+
 }

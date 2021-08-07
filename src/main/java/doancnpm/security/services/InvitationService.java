@@ -32,12 +32,13 @@ public class InvitationService implements IInvitationService {
 	
 	@Override
 	public void save(String username, Long idTutor) {
-		
+	
 		User user = userRepository.findOneByusername(username);
 				
 		Student student = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student not found"));
-				
+		List<Invitation> invitations = invitationRepository.findAll();
+			
 		Tutor tutor = tutorRepository.findOne(idTutor);
 		
 		Invitation invitation = new Invitation();
@@ -46,6 +47,7 @@ public class InvitationService implements IInvitationService {
 		invitation.setStatus(0);
 		
 		invitation = invitationRepository.save(invitation);
+	
 		
 	}
 
@@ -85,6 +87,13 @@ public class InvitationService implements IInvitationService {
 	@Override
 	public List<Invitation> findByIdTutor(long idTutor) {
 		return  invitationRepository.findBytutor_id(idTutor);
+	}
+
+
+	@Override
+	public List<Invitation> findAll() {
+		
+		return invitationRepository.findAll();
 	}
 
 

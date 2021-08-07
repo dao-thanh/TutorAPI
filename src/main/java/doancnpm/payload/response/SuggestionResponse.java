@@ -4,8 +4,53 @@ public class SuggestionResponse {
 
 	private Long id;
 	private Long idStudent;
+	private String nameStudent;
+	private String phoneNumberStudent;
 	private Long idTutor;
+	private String nameTutor;
+	private String phoneNumberTutor;
+	private String avatar;
 	private Long idPost;
+	private String titlePost;
+	
+	
+	
+	public String getNameStudent() {
+		return nameStudent;
+	}
+	public void setNameStudent(String nameStudent) {
+		this.nameStudent = nameStudent;
+	}
+	public String getPhoneNumberStudent() {
+		return phoneNumberStudent;
+	}
+	public void setPhoneNumberStudent(String phoneNumberStudent) {
+		this.phoneNumberStudent = phoneNumberStudent;
+	}
+	public String getPhoneNumberTutor() {
+		return phoneNumberTutor;
+	}
+	public void setPhoneNumberTutor(String phoneNumberTutor) {
+		this.phoneNumberTutor = phoneNumberTutor;
+	}
+	public String getTitlePost() {
+		return titlePost;
+	}
+	public void setTitlePost(String titlePost) {
+		this.titlePost = titlePost;
+	}
+	public String getNameTutor() {
+		return nameTutor;
+	}
+	public void setNameTutor(String nameTutor) {
+		this.nameTutor = nameTutor;
+	}
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 	public Long getIdPost() {
 		return idPost;
 	}

@@ -11,4 +11,5 @@ public interface IInvitationService {
 	void accept(String username, long idStudent);
 	void reject(String username, long idStudent);
 	List<Invitation> findByIdTutor(long idTutor);
+	List<Invitation> findAll();
 }

@@ -13,7 +13,7 @@ public class PostConverter {
 		entity.setTitle(dto.getTitle());
 		entity.setDescription(dto.getDescription());
 		entity.setPrice(dto.getPrice());
-		entity.setPhoneNumber(dto.getPhoneNumber());
+		entity.setPhoneNumber(dto.getPhonenumber());
 		entity.setAddress(dto.getAddress());
 		return entity;
 	}
@@ -26,7 +26,7 @@ public class PostConverter {
 		dto.setTitle(entity.getTitle());
 		dto.setDescription(entity.getDescription());
 		dto.setPrice(entity.getPrice());
-		dto.setPhoneNumber(entity.getPhoneNumber());
+		dto.setPhonenumber(entity.getPhoneNumber());
 		dto.setAddress(entity.getAddress());
 		dto.setCreatedDate(entity.getCreatedDate());
 		dto.setModifiedDate(entity.getModifiedDate());
@@ -39,7 +39,7 @@ public class PostConverter {
 		entity.setTitle(dto.getTitle());
 		entity.setDescription(dto.getDescription());
 		entity.setPrice(dto.getPrice());
-		entity.setPhoneNumber(dto.getPhoneNumber());
+		entity.setPhoneNumber(dto.getPhonenumber());
 		entity.setAddress(dto.getAddress());
 		return entity;
 	}

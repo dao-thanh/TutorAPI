@@ -13,17 +13,27 @@ import doancnpm.models.User;
 
 public class TutorOutput {
 	private Long id;
+	private Long idUser;
 	private String name;
 	private String phonenumber;
+	private Long age;
+	private Long gender;
 	private String qualification;
 	private String avatar;
 	private String rating;
 	private String description;
 	private String address;
 	@JsonIgnoreProperties("tutors")
-	private Set<String> subjects;
-	private Set<String> grades;
+	private Set<String> subject;
+	private Set<String> grade;
 
+	
+	public Long getIdUser() {
+		return idUser;
+	}
+	public void setIdUser(Long idUser) {
+		this.idUser = idUser;
+	}
 	private Map<String,Boolean> schedules;
 	
 	public Map<String, Boolean> getSchedules() {
@@ -35,6 +45,18 @@ public class TutorOutput {
 
 	
 	
+	public Long getAge() {
+		return age;
+	}
+	public void setAge(Long age) {
+		this.age = age;
+	}
+	public Long getGender() {
+		return gender;
+	}
+	public void setGender(Long gender) {
+		this.gender = gender;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -74,17 +96,18 @@ public class TutorOutput {
 	}
 	
 	
-	public Set<String> getSubjects() {
-		return subjects;
+	
+	public Set<String> getSubject() {
+		return subject;
 	}
-	public void setSubjects(Set<String> subjects) {
-		this.subjects = subjects;
+	public void setSubject(Set<String> subject) {
+		this.subject = subject;
 	}
-	public Set<String> getGrades() {
-		return grades;
+	public Set<String> getGrade() {
+		return grade;
 	}
-	public void setGrades(Set<String> grades) {
-		this.grades = grades;
+	public void setGrade(Set<String> grade) {
+		this.grade = grade;
 	}
 	public String getName() {
 		return name;

@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import doancnpm.models.Invitation;
 import doancnpm.models.Student;
 import doancnpm.models.Suggestion;
 import doancnpm.models.User;
 import doancnpm.payload.request.SuggestionRequest;
+import doancnpm.payload.response.InvitationResponse;
 import doancnpm.payload.response.SuggestionResponse;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.UserRepository;
@@ -43,6 +45,35 @@ public class SuggestionController {
 	private UserRepository userRepository;
 	@Autowired
 	private StudentRepository studentRepository;
+	
+	@GetMapping(value = "/suggestion")
+	public Map<String, List<SuggestionResponse>> all(){
+		
+		
+		List<Suggestion> suggestions = suggestionService.findAll();
+		List<SuggestionResponse> suggestionResponses = new ArrayList<SuggestionResponse>();
+		for(int i=0;i<suggestions.size();i++) {
+			SuggestionResponse suggestionResponse = new SuggestionResponse();
+			suggestionResponse.setId(suggestions.get(i).getId());
+			suggestionResponse.setIdPost(suggestions.get(i).getPost().getId());
+			suggestionResponse.setTitlePost(suggestions.get(i).getPost().getTitle());
+			suggestionResponse.setStatus(suggestions.get(i).getStatus());
+			suggestionResponse.setNameTutor(suggestions.get(i).getTutor().getUser().getName());
+			suggestionResponse.setPhoneNumberTutor(suggestions.get(i).getTutor().getUser().getPhonenumber());
+			suggestionResponse.setNameStudent(suggestions.get(i).getStudent().getUser().getName());
+			suggestionResponse.setPhoneNumberStudent(suggestions.get(i).getStudent().getUser().getPhonenumber());
+			suggestionResponse.setAvatar(suggestions.get(i).getTutor().getAvatar());
+			suggestionResponse.setIdStudent(suggestions.get(i).getStudent().getId());
+			suggestionResponse.setIdTutor(suggestions.get(i).getTutor().getId());
+			
+			suggestionResponses.add(suggestionResponse);
+		}
+		
+		Map<String,List<SuggestionResponse>> response = new HashMap<String, List<SuggestionResponse>>();
+		response.put("suggestions", suggestionResponses);
+		return response;
+	}
+	
 	
 	@PostMapping(value = "/api/suggestion")
 	@PreAuthorize("hasRole('TUTOR')")
@@ -114,7 +145,13 @@ public class SuggestionController {
 			suggestionResponse.setId(suggestions.get(i).getId());
 			suggestionResponse.setIdStudent(suggestions.get(i).getStudent().getId());
 			suggestionResponse.setIdTutor(suggestions.get(i).getTutor().getId());
+			suggestionResponse.setNameTutor(suggestions.get(i).getTutor().getUser().getName());
+			suggestionResponse.setPhoneNumberTutor(suggestions.get(i).getTutor().getUser().getPhonenumber());
+			suggestionResponse.setNameStudent(suggestions.get(i).getStudent().getUser().getName());
+			suggestionResponse.setPhoneNumberStudent(suggestions.get(i).getStudent().getUser().getPhonenumber());
+			suggestionResponse.setAvatar(suggestions.get(i).getTutor().getAvatar());
 			suggestionResponse.setIdPost(suggestions.get(i).getPost().getId());
+			suggestionResponse.setTitlePost(suggestions.get(i).getPost().getTitle());
 			suggestionResponse.setStatus(suggestions.get(i).getStatus());
 			suggestionResponses.add(suggestionResponse);
 		}

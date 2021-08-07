@@ -2,6 +2,7 @@ package doancnpm.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +31,7 @@ import doancnpm.models.Grade;
 import doancnpm.models.Post;
 import doancnpm.models.Student;
 import doancnpm.models.Subject;
+import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.payload.response.PostOut;
@@ -38,6 +40,7 @@ import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.SubjectRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.ITutorService;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
 
@@ -58,6 +61,8 @@ public class PostController {
 	StudentRepository studentRepository;
 	@Autowired
 	private iPostService postService;
+	@Autowired
+	private ITutorService tutorService;
 
 	@Autowired
 	private JwtUtils jwtUtils;
@@ -105,22 +110,25 @@ public class PostController {
 			postOut.setId(post.get(i).getId());
 			postOut.setIdStudent(post.get(i).getStudent().getId());
 			postOut.setAddress(post.get(i).getAddress());
-			postOut.setGrade(post.get(i).getGrade().getGradename());
+			if(post.get(i).getGrade() != null)
+				postOut.setGrade(post.get(i).getGrade().getGradename());
+			else
+				postOut.setGrade("");
 			Set<Subject> setSubjects = post.get(i).getSubjects();
 			Set<String> subjects = new HashSet<String>();
 			for (Subject subject : setSubjects) {
 				subjects.add(subject.getSubjectname());
 			}
-			postOut.setSubjects(subjects);
+			postOut.setSubject(subjects);
 			postOut.setDescription(post.get(i).getDescription());
-			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
+			postOut.setPhonenumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
 
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
-				postOut.setSchedule(schedule);
+				postOut.setSchedules(schedule);
 			} catch (IOException e) {
 
 				e.printStackTrace();
@@ -146,7 +154,7 @@ public class PostController {
 	}
 
 	@DeleteMapping(value = "/api/post/{id}")
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+	@PreAuthorize("hasRole('STUDENT')")
 	public void deletePost(HttpServletRequest request, @PathVariable("id") long id) {
 		String jwt = parseJwt(request);
 		String username = "";
@@ -171,16 +179,16 @@ public class PostController {
 		for (Subject subject : setSubjects) {
 			subjects.add(subject.getSubjectname());
 		}
-		postOut.setSubjects(subjects);
+		postOut.setSubject(subjects);
 		postOut.setDescription(post.getDescription());
-		postOut.setPhoneNumber(post.getPhoneNumber());
+		postOut.setPhonenumber(post.getPhoneNumber());
 		postOut.setPrice(post.getPrice());
 		postOut.setTitle(post.getTitle());
 
 		try {
 			Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 			System.out.println(schedule);
-			postOut.setSchedule(schedule);
+			postOut.setSchedules(schedule);
 		} catch (IOException e) {
 
 			e.printStackTrace();
@@ -199,22 +207,24 @@ public class PostController {
 			PostOut postOut = new PostOut();
 			postOut.setId(post.get(i).getId());
 			postOut.setAddress(post.get(i).getAddress());
-			postOut.setGrade(post.get(i).getGrade().getGradename());
+			if(post.get(i).getGrade() != null)
+				postOut.setGrade(post.get(i).getGrade().getGradename());
+			else postOut.setGrade("");
 			Set<Subject> setSubjects = post.get(i).getSubjects();
 			Set<String> subjects = new HashSet<String>();
 			for (Subject subject : setSubjects) {
 				subjects.add(subject.getSubjectname());
 			}
-			postOut.setSubjects(subjects);
+			postOut.setSubject(subjects);
 			postOut.setDescription(post.get(i).getDescription());
-			postOut.setPhoneNumber(post.get(i).getPhoneNumber());
+			postOut.setPhonenumber(post.get(i).getPhoneNumber());
 			postOut.setPrice(post.get(i).getPrice());
 			postOut.setTitle(post.get(i).getTitle());
 			postOut.setIdStudent(post.get(i).getStudent().getId());
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
-				postOut.setSchedule(schedule);
+				postOut.setSchedules(schedule);
 			} catch (IOException e) {
 
 				e.printStackTrace();
@@ -226,6 +236,79 @@ public class PostController {
 		return response;
 	}
 
+	@GetMapping(value = "/post/recommendation")
+	@PreAuthorize("hasRole('TUTOR')")
+	public Map<String, List<PostOut>> recommendPost(HttpServletRequest request) {
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}
+		Tutor tutor = tutorService.findTutor(username);
+		
+		List<Post> post = postService.findAll();
+		List<Post> post1 = new ArrayList<Post>();
+		List<Post> post2 = new ArrayList<Post>();
+		List<Post> post3 = new ArrayList<Post>();
+		
+		for(int i=0;i<post.size();i++)
+			if(tutor.getSubjects().containsAll(post.get(i).getSubjects()) == true && 
+					tutor.getGrades().contains(post.get(i).getGrade()) == true )
+				post1.add(post.get(i));
+			else
+			if((tutor.getSubjects().containsAll(post.get(i).getSubjects()) == true && 
+					tutor.getGrades().contains(post.get(i).getGrade()) == false) ||
+					(tutor.getSubjects().containsAll(post.get(i).getSubjects()) == false && 
+					tutor.getGrades().contains(post.get(i).getGrade()) == true ))
+				post2.add(post.get(i));
+			else
+				post3.add(post.get(i));
+				
+		List<Post> recommendPost = new ArrayList<Post>();
+		for(int i=0;i<post1.size();i++)
+			recommendPost.add(post1.get(i));
+		for(int j=0;j<post2.size();j++)
+			recommendPost.add(post2.get(j));
+		for(int k=0;k<post3.size();k++)
+			recommendPost.add(post3.get(k));
+		
+		List<PostOut> postOuts = new ArrayList<PostOut>();
+		for (int i = 0; i < recommendPost.size(); i++) {
+			String schedules = recommendPost.get(i).getSchedule();
+			PostOut postOut = new PostOut();
+			postOut.setId(recommendPost.get(i).getId());
+			postOut.setAddress(recommendPost.get(i).getAddress());
+			if(recommendPost.get(i).getGrade() != null)
+				postOut.setGrade(recommendPost.get(i).getGrade().getGradename());
+			else
+				postOut.setGrade("");
+			Set<Subject> setSubjects = recommendPost.get(i).getSubjects();
+			Set<String> subjects = new HashSet<String>();
+			for (Subject subject : setSubjects) {
+				subjects.add(subject.getSubjectname());
+			}
+			postOut.setSubject(subjects);
+			postOut.setDescription(recommendPost.get(i).getDescription());
+			postOut.setPhonenumber(recommendPost.get(i).getPhoneNumber());
+			postOut.setPrice(recommendPost.get(i).getPrice());
+			postOut.setTitle(recommendPost.get(i).getTitle());
+			postOut.setIdStudent(recommendPost.get(i).getStudent().getId());
+			try {
+				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
+				System.out.println(schedule);
+				postOut.setSchedules(schedule);
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+			postOuts.add(postOut);
+		}
+		Map<String, List<PostOut>> response = new HashMap<String, List<PostOut>>();
+		response.put("post", postOuts);
+		return response;
+	}
+	
+	
 	@GetMapping("/post/search")
 	public Map<String, List<PostOut>> searchPost(@RequestParam(required = false) String grade, String address,
 			String subject) {
@@ -283,22 +366,25 @@ public class PostController {
 			PostOut postOut = new PostOut();
 			postOut.setId(posts.get(i).getId());
 			postOut.setAddress(posts.get(i).getAddress());
-			postOut.setGrade(posts.get(i).getGrade().getGradename());
+			if(posts.get(i).getGrade() != null)
+				postOut.setGrade(posts.get(i).getGrade().getGradename());
+			else 
+				postOut.setGrade("");
 			Set<Subject> setSubjects = posts.get(i).getSubjects();
 			Set<String> subjects1 = new HashSet<String>();
 			for (Subject subject1 : setSubjects) {
 				subjects1.add(subject1.getSubjectname());
 			}
-			postOut.setSubjects(subjects1);
+			postOut.setSubject(subjects1);
 			postOut.setDescription(posts.get(i).getDescription());
-			postOut.setPhoneNumber(posts.get(i).getPhoneNumber());
+			postOut.setPhonenumber(posts.get(i).getPhoneNumber());
 			postOut.setPrice(posts.get(i).getPrice());
 			postOut.setTitle(posts.get(i).getTitle());
 			postOut.setIdStudent(posts.get(i).getStudent().getId());
 			try {
 				Map<String, Boolean> schedule = new ObjectMapper().readValue(schedules, HashMap.class);
 				System.out.println(schedule);
-				postOut.setSchedule(schedule);
+				postOut.setSchedules(schedule);
 			} catch (IOException e) {
 
 				e.printStackTrace();

@@ -9,18 +9,47 @@ import java.util.Set;
 
 public class AddTutorRequest {
 	private Long id;
+	private String phonenumber;
+	private Long age;
+	private String name;
+	private Long gender;
 	private String qualification;
-	private String avatar;
+//	private String avatar;
 	private String description;
-	private Set<String> subjects;
+	private Set<String> subject;
 	private Set<String> grade;
 	private String address;
-	private Set<String> teachingDate;
+//	private Set<String> teachingDate;
 	private String username;
 	private String rating;
-	private Map<String,Boolean> schedule;
+	private Map<String,Boolean> schedules;
 	
 	
+	
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
+	}
+	public Long getAge() {
+		return age;
+	}
+	public void setAge(Long age) {
+		this.age = age;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Long getGender() {
+		return gender;
+	}
+	public void setGender(Long gender) {
+		this.gender = gender;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -33,11 +62,18 @@ public class AddTutorRequest {
 	public Long getId() {
 		return id;
 	}
-	public Map<String, Boolean> getSchedule() {
-		return schedule;
+	
+	public Set<String> getSubject() {
+		return subject;
 	}
-	public void setSchedule(Map<String, Boolean> schedule) {
-		this.schedule = schedule;
+	public void setSubject(Set<String> subject) {
+		this.subject = subject;
+	}
+	public Map<String, Boolean> getSchedules() {
+		return schedules;
+	}
+	public void setSchedules(Map<String, Boolean> schedules) {
+		this.schedules = schedules;
 	}
 	public void setId(Long id) {
 		this.id = id;
@@ -79,10 +115,5 @@ public class AddTutorRequest {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public Set<String> getSubjects() {
-		return subjects;
-	}
-	public void setSubjects(Set<String> subjects) {
-		this.subjects = subjects;
-	}
+
 }

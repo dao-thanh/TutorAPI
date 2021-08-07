@@ -38,12 +38,11 @@ import doancnpm.security.jwt.JwtUtils;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api")
+
 public class CommentController {
 	
 	@Autowired
 	ICommentService commentService;
-	
 
 	@Autowired
 	UserRepository userRepository;
@@ -52,8 +51,8 @@ public class CommentController {
 	@Autowired
 	private JwtUtils jwtUtils;
 	
-	@GetMapping(value = "/comment")
-	@PreAuthorize("hasRole('TUTOR')")
+	@GetMapping(value = "/api/comment")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
 	public Map<String, List<CommentResponse>> getCommentByIdTutor(HttpServletRequest request) {
 		
 		String jwt = parseJwt(request);
@@ -75,6 +74,7 @@ public class CommentController {
 			commentResponse.setId(comments.get(i).getId());
 			commentResponse.setIdTutor(comments.get(i).getTutor().getId());
 			commentResponse.setIdStudent(comments.get(i).getStudent().getId());
+			commentResponse.setNameStudent(comments.get(i).getStudent().getUser().getName());
 			commentResponse.setContent(comments.get(i).getContent());
 			commentResponses.add(commentResponse);
 		}
@@ -84,7 +84,7 @@ public class CommentController {
 		return response;
 	}
 	
-	@PostMapping(value = "/comment")
+	@PostMapping(value = "/api/comment")
 	@PreAuthorize("hasRole('STUDENT')")
 	public void createComment(HttpServletRequest request, @RequestBody CommentRequest model) {
 		String jwt = parseJwt(request);
@@ -96,14 +96,25 @@ public class CommentController {
 	}
 	
 	
-//	@GetMapping(value = "/message")
-//	public Map<String, List<Comment>> all(){
-//		List<Comment> messages = messageService.all();
-//		Map<String,List<Comment>> response = new HashMap<String, List<Comment>>();
-//		response.put("messages", messages);
-//		return response;
-//	}
-//	
+	@GetMapping(value = "/comment")
+	public Map<String, List<CommentResponse>> all(){
+		//List<Comment> messages = messageService.all();
+		List<Comment> comments = commentService.findAll();
+		List<CommentResponse> commentResponses = new ArrayList<CommentResponse>();
+		for(int i=0;i<comments.size();i++) {
+			CommentResponse commentResponse = new CommentResponse();
+			commentResponse.setId(comments.get(i).getId());
+			commentResponse.setContent(comments.get(i).getContent());
+			commentResponse.setIdStudent(comments.get(i).getStudent().getId());
+			commentResponse.setNameStudent(comments.get(i).getStudent().getUser().getName());
+			commentResponse.setIdTutor(comments.get(i).getTutor().getId());
+			commentResponses.add(commentResponse);
+		}
+		Map<String,List<CommentResponse>> response = new HashMap<String, List<CommentResponse>>();
+		response.put("comments", commentResponses);
+		return response;
+	}
+	
 //	@GetMapping("/message/{id}")
 //	 public ResponseEntity<Comment> getMessageById(@PathVariable("id") long id) {
 //	    //User userData = userService.getUserById(id);

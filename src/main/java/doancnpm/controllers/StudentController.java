@@ -1,5 +1,6 @@
 package doancnpm.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import doancnpm.models.Student;
 import doancnpm.payload.request.StudentRequest;
+import doancnpm.payload.response.StudentOutput;
+import doancnpm.payload.response.TutorOutput;
 import doancnpm.security.IStudentService;
 import doancnpm.security.jwt.JwtUtils;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api")
+
 public class StudentController {
 	@Autowired
 	private IStudentService studentService;
@@ -35,14 +38,53 @@ public class StudentController {
 	private JwtUtils jwtUtils;
 	
 	@GetMapping(value = "/student")
-	@PreAuthorize("hasRole('ADMIN')")
-	public Map<String, List<Student>> all() {
-		List<Student> student = studentService.all();
-		Map<String, List<Student>> response = new HashMap<String, List<Student>>();
-		response.put("students", student);
+	public Map<String, List<StudentOutput>> all() {
+		List<Student> students = studentService.all();
+		
+		List<StudentOutput> studentOutputs = new ArrayList<StudentOutput>();
+		for(int i=0;i<students.size();i++) {
+			StudentOutput studentOutput = new StudentOutput();
+			studentOutput.setId(students.get(i).getId());
+			studentOutput.setIdUser(students.get(i).getUser().getId());
+			studentOutput.setName(students.get(i).getUser().getName());
+			studentOutput.setAge(students.get(i).getUser().getAge());
+			studentOutput.setPhonenumber(students.get(i).getUser().getPhonenumber());
+			studentOutput.setGender(students.get(i).getUser().getGender());
+			
+			studentOutputs.add(studentOutput);
+		}
+		
+		Map<String, List<StudentOutput>> response = new HashMap<String, List<StudentOutput>>();
+		response.put("students", studentOutputs);
 		return response;
 	}
 
+	@GetMapping("/api/student/profile")
+	@PreAuthorize("hasRole('STUDENT')")
+	public ResponseEntity<StudentOutput> getStudent(HttpServletRequest request){
+		String jwt = parseJwt(request);
+		String username = "";
+		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}	
+		
+		Student studentData = studentService.findStudent(username);
+		
+		StudentOutput studentOutput = new StudentOutput();
+		studentOutput.setId(studentData.getId());
+		studentOutput.setIdUser(studentData.getUser().getId());
+		studentOutput.setName(studentData.getUser().getName());
+		studentOutput.setPhonenumber(studentData.getUser().getPhonenumber());
+		studentOutput.setAge(studentData.getUser().getAge());
+		studentOutput.setGender(studentData.getUser().getGender());
+		
+		if (studentData != null) {
+			return new ResponseEntity<>(studentOutput, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
 	@GetMapping("/student/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
 	public ResponseEntity<Student> getUserById(@PathVariable("id") long id) {
@@ -55,9 +97,9 @@ public class StudentController {
 		}
 	}
 
-	@PutMapping(value = "/student")
+	@PutMapping(value = "/api/student")
 	@PreAuthorize("hasRole('STUDENT')")
-	public String updateUser(HttpServletRequest request, @RequestBody StudentRequest model) {
+	public String updateStudent(HttpServletRequest request, @RequestBody StudentRequest model) {
 
 //	    Optional<User> userEdit = userService.findUserById(userId);  
 //	    userEdit.ifPresent(user -> model.addAttribute("user", user));

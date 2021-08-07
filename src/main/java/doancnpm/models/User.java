@@ -58,7 +58,7 @@ public class User {
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@JsonIgnoreProperties("users")
 	private Set<Role> roles = new HashSet<>();
-
+	
 //	@OneToMany(mappedBy = "user")
 //	@JsonIgnoreProperties("user")
 //	private List<Message> messages = new ArrayList<>();

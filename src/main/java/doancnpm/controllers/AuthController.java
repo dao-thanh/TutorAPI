@@ -141,9 +141,11 @@ public class AuthController {
 		}
 		
 		user.setRoles(roles);	
+		user.setName(signUpRequest.getUsername());
 		userRepository.save(user);
 		if(strRoles.contains("tutor")){
 			Tutor tutor = new Tutor();
+			tutor.setAvatar("https://storage.googleapis.com/tutor-a4d9d.appspot.com/c67a91c5-e28f-4084-af61-71f1f68ec184jpg");
 			tutor.setUser(user);
 			tutorRepository.save(tutor);
 			//tutorService.save(addTutorRequest);

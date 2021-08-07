@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -23,11 +26,13 @@ public class Invitation{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
 	@JoinColumn(name="student_id")
 	@JsonIgnoreProperties("invitation")
 	private Student student;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
 	@JoinColumn(name="tutor_id")
 	@JsonIgnoreProperties("invitation")

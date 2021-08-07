@@ -3,6 +3,7 @@ package doancnpm.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -26,9 +30,12 @@ public class Grade {
 	@Column(name = "gradename")
 	private String gradename;
 	
-	@OneToMany(mappedBy = "grade")
+	@OneToMany(mappedBy = "grade", orphanRemoval = true,
+		    cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("grade")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Post> posts = new ArrayList<>();
+	
 	
 	@ManyToMany(mappedBy = "grades")
 	@JsonIgnoreProperties("grades")

@@ -1,5 +1,13 @@
 package doancnpm.models;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -10,6 +18,19 @@ public class Role {
 	@Enumerated(EnumType.STRING)
 	@Column(length = 60)
 	private ERole name;
+
+	
+	@ManyToMany(mappedBy = "roles")
+	@JsonIgnoreProperties("roles")
+	private List<User> users = new ArrayList<>();
+	
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
 
 	public Role() {
 

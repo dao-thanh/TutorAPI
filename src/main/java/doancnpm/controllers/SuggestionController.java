@@ -44,9 +44,9 @@ public class SuggestionController {
 	@Autowired
 	private StudentRepository studentRepository;
 	
-	@PostMapping(value = "/api/suggestion/{idStudent}/{idPost}")
+	@PostMapping(value = "/api/suggestion")
 	@PreAuthorize("hasRole('TUTOR')")
-	public void createSuggestion(HttpServletRequest request, @PathVariable("idStudent") long idStudent, @PathVariable("idPost") long idPost) {
+	public void createSuggestion(HttpServletRequest request, @RequestParam long idStudent, @RequestParam long idPost) {
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -55,9 +55,9 @@ public class SuggestionController {
 		suggestionService.save(username, idPost, idStudent);
 	}
 	
-	@PutMapping(value = "/api/suggestion/acceptance/{idPost}")
+	@PutMapping(value = "/api/suggestion/acceptance")
 	@PreAuthorize("hasRole('STUDENT')")
-	public void acceptSuggestion(HttpServletRequest request, @PathVariable("idPost") long idPost, @RequestBody SuggestionRequest model) {
+	public void acceptSuggestion(HttpServletRequest request, @RequestParam long idPost, @RequestParam long idTutor) {
 
 		String jwt = parseJwt(request);
 		String username = "";
@@ -65,12 +65,12 @@ public class SuggestionController {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}
 		
-		suggestionService.accept(username, idPost, model.getId());
+		suggestionService.accept(username, idPost, idTutor);
 	}
 	
-	@PutMapping(value = "/api/suggestion/denial/{idPost}")
+	@PutMapping(value = "/api/suggestion/denial")
 	@PreAuthorize("hasRole('STUDENT')")
-	public void denySuggestion(HttpServletRequest request, @PathVariable("idPost") long idPost, @RequestBody SuggestionRequest model) {
+	public void denySuggestion(HttpServletRequest request, @RequestParam long idPost, @RequestParam long idTutor) {
 
 		String jwt = parseJwt(request);
 		String username = "";
@@ -78,7 +78,7 @@ public class SuggestionController {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}
 		
-		suggestionService.reject(username, idPost, model.getId());
+		suggestionService.reject(username, idPost, idTutor);
 	}
 	
 	@DeleteMapping(value = "/api/suggestion/{id}")

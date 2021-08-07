@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -50,8 +53,10 @@ public class User {
 	@Column(name = "gender", nullable = true)
 	private Long gender;
 
+	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JsonIgnoreProperties("users")
 	private Set<Role> roles = new HashSet<>();
 
 //	@OneToMany(mappedBy = "user")
@@ -70,17 +75,30 @@ public class User {
 
 	// @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
 	//  fetch = FetchType.LAZY, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("user")
 	private Tutor tutor;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("user")
 	private Student student;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("user")
+	private Admin admin;
+	
+	
+	public Admin getAdmin() {
+		return admin;
+	}
 
-	
-	
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
+	}
+
 	public Long getAge() {
 		return age;
 	}

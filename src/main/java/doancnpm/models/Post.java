@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -20,7 +21,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -41,12 +45,13 @@ public class Post  {
 	@Column(name = "description")
 	private String description;
 
-	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
 	@JoinColumn(name="grade_id")
 	@JsonIgnoreProperties("posts")
 	private Grade grade;
 
+	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "post_subject", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	@JsonIgnoreProperties("posts")
@@ -89,6 +94,7 @@ public class Post  {
 	private String address;
 
 	@Column(name = "schedule")
+	@Size(max = 500)
 	private String schedule;
 
 	@ManyToOne
@@ -96,7 +102,7 @@ public class Post  {
 	@JsonIgnoreProperties("post")
 	private Student student;
 
-	@OneToMany(mappedBy = "post")
+	@OneToMany(mappedBy = "post", cascade=CascadeType.REMOVE)
 	@JsonIgnoreProperties("post")
 	private List<Suggestion> suggestion = new ArrayList<>();
 
@@ -194,17 +200,5 @@ public class Post  {
 		return "Tutor [id=" + id + ", title=" + title + ", description=" + description + ", grade=" + grade
 				+ ", price=" + price + ",phone=" + phoneNumber + ",address=" + address + "]";
 	}
-
-//	public Post(String title, String description, String grade, String subject, String price, String phoneNumber,
-//			String address) {
-//		super();
-//		this.title = title;
-//		this.description = description;
-//		this.grade = grade;
-//		this.subject = subject;
-//		this.price = price;
-//		this.phoneNumber = phoneNumber;
-//		this.address = address;
-//	}
 
 }
